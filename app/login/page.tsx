@@ -50,7 +50,7 @@ export default async function LoginPage({
             Primeiro acesso ou esqueceu a senha? Procure o administrador da sua unidade.
           </p>
         </div>
-        <p className="login-copyright">© {new Date().getFullYear()} NexIgreja</p>
+        <p className="login-copyright">© {new Date().getFullYear()} NexSolutions</p>
       </section>
     </main>
   );
