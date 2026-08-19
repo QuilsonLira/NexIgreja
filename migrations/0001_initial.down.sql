@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS usuario_perfis;
+DROP TABLE IF EXISTS perfil_permissoes;
+DROP TABLE IF EXISTS permissoes;
+DROP TABLE IF EXISTS perfis;
+DROP TABLE IF EXISTS autenticacao_tentativas;
+DROP TABLE IF EXISTS auditoria_autenticacao;
+DROP TABLE IF EXISTS sessoes_usuario;
+DROP TABLE IF EXISTS usuarios;
+DROP TABLE IF EXISTS filiais;
+DROP TABLE IF EXISTS matrizes;
+DROP TABLE IF EXISTS convencoes;
