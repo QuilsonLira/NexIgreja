@@ -1,22 +1,22 @@
-import argon2, { type HashOptions } from "argon2";
+import { hash, verify, type Options } from "@node-rs/argon2";
 
-const ARGON_OPTIONS: HashOptions = {
-  type: argon2.argon2id,
+const ARGON_OPTIONS: Options = {
+  algorithm: 2,
   memoryCost: 65_536,
   timeCost: 3,
   parallelism: 1,
-  hashLength: 32
+  outputLen: 32
 };
 
 let dummyHashPromise: Promise<string> | null = null;
 
 export async function hashPassword(password: string): Promise<string> {
-  return argon2.hash(password, ARGON_OPTIONS);
+  return hash(password, ARGON_OPTIONS);
 }
 
-export async function verifyPassword(hash: string, password: string): Promise<boolean> {
+export async function verifyPassword(hashValue: string, password: string): Promise<boolean> {
   try {
-    return await argon2.verify(hash, password);
+    return await verify(hashValue, password);
   } catch {
     return false;
   }
