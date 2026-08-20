@@ -26,7 +26,6 @@ jobs:
           wc -c .upgrade/v43-secure.b64
           python3 - <<'PY'
           from pathlib import Path
-          import re
           for name in ['.upgrade/v43-secure.b64']:
               s=Path(name).read_text(errors='replace')
               bad=[(i,repr(c)) for i,c in enumerate(s) if c not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\r\n\t ']
@@ -55,3 +54,6 @@ jobs:
           file /tmp/original.bin
           xxd -l 32 /tmp/original.bin
           xz -t /tmp/original.bin; echo original_xz_exit=$?
+
+          echo 'diagnostico concluido; falha intencional para preservar os logs'
+          exit 1
