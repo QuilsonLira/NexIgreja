@@ -6,6 +6,10 @@ on:
       - upgrade-v43-2026-08-14
     paths:
       - '.github/workflows/diagnose-v43-package.yml'
+  pull_request:
+    branches:
+      - main
+    types: [synchronize]
   workflow_dispatch:
 
 permissions:
