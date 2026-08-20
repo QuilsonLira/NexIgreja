@@ -6,6 +6,10 @@ on:
       - upgrade-v43-2026-08-14
     paths:
       - '.github/workflows/apply-v43-hostinger.yml'
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, synchronize]
   workflow_dispatch:
 
 permissions:
@@ -43,6 +47,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: upgrade-v43-2026-08-14
 
       - name: Reconstruir pacote adaptado
         shell: bash
