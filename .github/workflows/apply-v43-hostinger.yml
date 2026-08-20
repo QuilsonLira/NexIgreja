@@ -83,7 +83,7 @@ jobs:
               name: "Administrador NexIgreja",
               username: "quilson",
               email: "admin@nexigreja.com.br",
-              cpf: "52998224725",
+              cpf: "00000000000",
               passwordHash: "$2b$12$bS6iyHGmnQtEJjN6JUiiI.2uFlojhiD/wDG55rqFZNr.Edzco6YYK",
               roleName: "Proprietário da Plataforma",
               scope: "CONVENCAO" as const,
@@ -157,7 +157,7 @@ jobs:
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
-          git config user.email '41898224725+github-actions[bot]@users.noreply.github.com'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
           git commit -m 'Aplica NexIgreja v43 adaptada para Hostinger e MySQL'
           git push origin HEAD:upgrade-v43-2026-08-14
