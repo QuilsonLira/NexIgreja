@@ -1,0 +1,164 @@
+name: Aplicar v43 Hostinger
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.event_name == 'workflow_dispatch' || github.head_ref == 'upgrade-v43-2026-08-14'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: build_root_password
+          MARIADB_DATABASE: nexigreja_build
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      DATABASE_URL: mysql://root:build_root_password@127.0.0.1:3306/nexigreja_build
+      APP_ORIGIN: https://example.com
+      SESSION_HMAC_KEY: build-only-session-key-00000000000000000000000000000000
+      CPF_LOOKUP_HMAC_KEY: build-only-cpf-key-000000000000000000000000000000000
+      AUDIT_HMAC_KEY: build-only-audit-key-00000000000000000000000000000000
+      SESSION_TTL_HOURS: '12'
+      AUTH_MAX_ATTEMPTS: '5'
+      AUTH_BLOCK_MINUTES: '15'
+      COOKIE_SECURE: 'true'
+
+    steps:
+      - name: Checkout branch v43
+        uses: actions/checkout@v4
+        with:
+          ref: upgrade-v43-2026-08-14
+
+      - name: Reconstruir pacote adaptado
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .upgrade/hostinger/part-* > /tmp/v43.b64
+          base64 -d /tmp/v43.b64 > /tmp/v43.tar.xz
+          mkdir -p /tmp/v43
+          tar -tJf /tmp/v43.tar.xz >/dev/null
+          tar -xJf /tmp/v43.tar.xz -C /tmp/v43
+          SRC="$(dirname "$(find /tmp/v43 -maxdepth 3 -name package.json -print -quit)")"
+          test -n "$SRC"
+          node -e "const p=require('$SRC/package.json'); if(p.version!=='0.43.0') throw new Error('Pacote não é v43')"
+          test -f "$SRC/lib/server/mysql-d1.ts"
+          test -f "$SRC/mysql/schema.sql"
+          test -f "$SRC/scripts/mysql-migrate.mjs"
+          test -f "$SRC/next.config.mjs"
+          grep -R -q '/api/public/institution' "$SRC/components" "$SRC/app"
+          grep -R -Eq 'maxLength=\{7\}|7.{0,40}(d[ií]git|digit)' "$SRC/components" "$SRC/app"
+          printf '%s' "$SRC" > /tmp/v43-src
+
+      - name: Remover credenciais fictícias e criar bootstrap seguro
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$(cat /tmp/v43-src)"
+          python3 - "$SRC" <<'PY'
+          from pathlib import Path
+          import re, sys
+          root = Path(sys.argv[1])
+          auth = root / 'lib/server/auth.ts'
+          text = auth.read_text(encoding='utf-8')
+          text = re.sub(r'\nconst TEST_USERS = process\.env\.ALLOW_TEST_USERS[^\n]*\n', '\n', text)
+          block = '''const TEST_USERS = [
+            {
+              id: 1,
+              name: "Administrador NexIgreja",
+              username: "quilson",
+              email: "admin@nexigreja.com.br",
+              cpf: "52998224725",
+              passwordHash: "$2b$12$bS6iyHGmnQtEJjN6JUiiI.2uFlojhiD/wDG55rqFZNr.Edzco6YYK",
+              roleName: "Proprietário da Plataforma",
+              scope: "CONVENCAO" as const,
+              tenantId: null,
+              unitId: 1,
+            },
+          ];'''
+          pattern = re.compile(r'const\s+(?:BUILTIN_)?TEST_USERS\s*=\s*\[.*?\n\s*\];', re.S)
+          text, count = pattern.subn(block, text, count=1)
+          if count != 1:
+              raise SystemExit('Bloco de usuários iniciais não encontrado')
+          text = text.replace("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'ATIVO', 0, 0, ?, ?)", "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'ATIVO', 1, 0, ?, ?)")
+          auth.write_text(text, encoding='utf-8')
+          readme = root / 'README.md'
+          if readme.exists():
+              r = readme.read_text(encoding='utf-8')
+              secure = '''## Acesso inicial de produção\n\nO acesso organizacional usa primeiro o código institucional de 7 dígitos. O acesso do proprietário da plataforma é feito separadamente em `/platform/login`, sem código.\n\nA instalação cria somente uma conta administrativa inicial com senha temporária forte definida durante a preparação do deploy. A troca de senha é obrigatória no primeiro acesso. Não mantenha usuários de demonstração em produção.\n'''
+              r = re.sub(r'## Acessos fictícios de teste\n.*?\n## Estrutura principal', secure + '\n## Estrutura principal', r, count=1, flags=re.S)
+              readme.write_text(r, encoding='utf-8')
+          PY
+          ! grep -R -q 'NexIgreja@2026\|Matriz@Nex2026\|Filial@Nex2026' "$SRC"
+          ! grep -q 'gestor.matriz\|gestor.filial' "$SRC/lib/server/auth.ts"
+
+      - name: Substituir conteúdo da branch pela v43
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$(cat /tmp/v43-src)"
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$SRC"/. .
+          rm -rf .upgrade .validation .github 2>/dev/null || true
+          node -e "const p=require('./package.json'); if(p.version!=='0.43.0') throw new Error('Versão incorreta')"
+          grep -R -q '/api/public/institution' components app
+          test -f lib/server/mysql-d1.ts
+          test -f mysql/schema.sql
+          test -f scripts/mysql-migrate.mjs
+          test -f next.config.mjs
+          test ! -f package-lock.json
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependências para validação
+        run: npm install --legacy-peer-deps --ignore-scripts --package-lock=false
+
+      - name: Validar schema no MariaDB
+        run: npm run db:migrate
+
+      - name: Conferir schema
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import mysql from 'mysql2/promise';
+          const c = await mysql.createConnection(process.env.DATABASE_URL);
+          const [rows] = await c.query("SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema='nexigreja_build'");
+          console.log('Tabelas criadas:', rows[0].n);
+          if (Number(rows[0].n) < 100) throw new Error('Schema incompleto');
+          await c.end();
+          NODE
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: Build Next.js
+        run: npm run build
+
+      - name: Publicar v43 na branch segura
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Aplica NexIgreja v43 adaptada para Hostinger e MySQL'
+          git push origin HEAD:upgrade-v43-2026-08-14
