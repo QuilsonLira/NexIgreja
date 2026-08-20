@@ -22,42 +22,29 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: upgrade-v43-2026-08-14
-      - name: Examinar pacotes candidatos
+      - name: Reconstruir decodificando cada parte
         shell: bash
         run: |
-          set +e
-          echo '=== v43-secure.b64 ==='
-          wc -c .upgrade/v43-secure.b64
-          python3 - <<'PY'
-          from pathlib import Path
-          for name in ['.upgrade/v43-secure.b64']:
-              s=Path(name).read_text(errors='replace')
-              bad=[(i,repr(c)) for i,c in enumerate(s) if c not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\r\n\t ']
-              print(name, 'chars=',len(s),'invalid=',len(bad),'first_invalid=',bad[:10])
-          PY
-          base64 -d .upgrade/v43-secure.b64 > /tmp/secure.bin
-          echo secure_base64_exit=$?
-          wc -c /tmp/secure.bin
-          file /tmp/secure.bin
-          xxd -l 32 /tmp/secure.bin
-          xz -t /tmp/secure.bin; echo secure_xz_exit=$?
-          tar -tf /tmp/secure.bin >/tmp/tarlist 2>/tmp/tarerr; echo secure_tar_exit=$?; head -5 /tmp/tarlist; head -5 /tmp/tarerr
+          set -euo pipefail
 
-          echo '=== v43-000..011 ==='
-          cat .upgrade/v43-[0-9][0-9][0-9].b64 > /tmp/original.b64
-          wc -c /tmp/original.b64
-          python3 - <<'PY'
-          from pathlib import Path
-          s=Path('/tmp/original.b64').read_text(errors='replace')
-          bad=[(i,repr(c)) for i,c in enumerate(s) if c not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=\r\n\t ']
-          print('original chars=',len(s),'invalid=',len(bad),'first_invalid=',bad[:20])
-          PY
-          base64 -d /tmp/original.b64 > /tmp/original.bin
-          echo original_base64_exit=$?
-          wc -c /tmp/original.bin
-          file /tmp/original.bin
-          xxd -l 32 /tmp/original.bin
-          xz -t /tmp/original.bin; echo original_xz_exit=$?
+          echo '=== conjunto original v43-000..011 ==='
+          : > /tmp/original.tar.xz
+          for f in .upgrade/v43-[0-9][0-9][0-9].b64; do
+            echo "decodificando $f"
+            base64 -d "$f" >> /tmp/original.tar.xz
+          done
+          file /tmp/original.tar.xz
+          xz -t /tmp/original.tar.xz
+          tar -tJf /tmp/original.tar.xz | head -20
+          sha256sum /tmp/original.tar.xz
 
-          echo 'diagnostico concluido; falha intencional para preservar os logs'
-          exit 1
+          echo '=== conjunto hostinger/part-* ==='
+          : > /tmp/hostinger.tar.xz
+          for f in .upgrade/hostinger/part-*; do
+            echo "decodificando $f"
+            base64 -d "$f" >> /tmp/hostinger.tar.xz
+          done
+          file /tmp/hostinger.tar.xz
+          xz -t /tmp/hostinger.tar.xz
+          tar -tJf /tmp/hostinger.tar.xz | head -20
+          sha256sum /tmp/hostinger.tar.xz
