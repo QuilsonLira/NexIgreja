@@ -1,0 +1,48 @@
+name: Validate MySQL separate env config
+
+on:
+  push:
+    branches:
+      - fix-mysql-database-url
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: nexigreja_test
+          MYSQL_USER: nexigreja
+          MYSQL_PASSWORD: testpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -prootpass"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx tsc --noEmit
+      - name: Test separate MySQL env variables
+        env:
+          MYSQL_RUNTIME_ENABLED: "true"
+          DB_HOST: 127.0.0.1
+          DB_PORT: "3306"
+          DB_USER: nexigreja
+          DB_PASSWORD: testpass
+          DB_NAME: nexigreja_test
+          DATABASE_URL: mysql://wrong:wrong@127.0.0.1:3306/wrong_database
+        run: |
+          node -e "import('./db/mysql.ts').then(async m => { const p=m.getMysqlPool(); const [r]=await p.query('SELECT DATABASE() AS db'); if(r[0].db!=='nexigreja_test') throw new Error('DB_* variables were not preferred'); await p.end(); console.log('MYSQL_SEPARATE_ENV_OK') })"
+      - run: npm run build
