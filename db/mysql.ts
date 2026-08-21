@@ -20,16 +20,19 @@ function positiveInteger(value: string | undefined, fallback: number): number {
 }
 
 function connectionFromSeparateEnvironment(): mysql.PoolOptions | null {
+  const socketPath = process.env.DB_SOCKET?.trim();
   const host = process.env.DB_HOST?.trim();
   const user = process.env.DB_USER?.trim();
   const password = process.env.DB_PASSWORD;
   const database = process.env.DB_NAME?.trim();
 
-  const anyProvided = Boolean(host || user || password !== undefined || database);
+  const anyProvided = Boolean(
+    socketPath || host || user || password !== undefined || database,
+  );
   if (!anyProvided) return null;
 
   const missing = [
-    !host ? "DB_HOST" : null,
+    !socketPath && !host ? "DB_SOCKET ou DB_HOST" : null,
     !user ? "DB_USER" : null,
     password === undefined ? "DB_PASSWORD" : null,
     !database ? "DB_NAME" : null,
@@ -40,6 +43,15 @@ function connectionFromSeparateEnvironment(): mysql.PoolOptions | null {
       "NEXIGREJA_MYSQL_ENV_INCOMPLETE",
       `Variáveis MySQL ausentes: ${missing.join(", ")}.`,
     );
+  }
+
+  if (socketPath) {
+    return {
+      socketPath,
+      user,
+      password,
+      database,
+    };
   }
 
   return {
@@ -56,7 +68,7 @@ function connectionFromDatabaseUrl(): mysql.PoolOptions {
   if (!databaseUrl) {
     throw configurationError(
       "NEXIGREJA_MYSQL_ENV_MISSING",
-      "Configure DB_HOST/DB_USER/DB_PASSWORD/DB_NAME ou DATABASE_URL para o backend MySQL.",
+      "Configure DB_SOCKET/DB_USER/DB_PASSWORD/DB_NAME, DB_HOST/DB_USER/DB_PASSWORD/DB_NAME ou DATABASE_URL para o backend MySQL.",
     );
   }
 
