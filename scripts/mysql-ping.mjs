@@ -33,6 +33,16 @@ try {
     "auth_users",
     "people",
     "finance_periods",
+    "finance_accounts",
+    "finance_movements",
+    "finance_categories",
+    "finance_obligations",
+    "commercial_features",
+    "plan_features",
+    "tenant_feature_overrides",
+    "secretary_audit",
+    "secretary_document_sequences",
+    "platform_owners",
     "_nexigreja_migrations",
   ];
   const missing = required.filter((name) => !tableNames.has(name));
@@ -40,11 +50,18 @@ try {
     throw new Error(`Estrutura MySQL incompleta. Tabelas ausentes: ${missing.join(", ")}`);
   }
 
+  const expectedMinimumTables = 117;
+  if (tableNames.size < expectedMinimumTables) {
+    throw new Error(
+      `Estrutura MySQL incompleta. Esperadas ao menos ${expectedMinimumTables} tabelas, encontradas ${tableNames.size}.`,
+    );
+  }
+
   console.log("MYSQL_CONNECTION_OK");
   console.log(`database=${result?.databaseName ?? "unknown"}`);
   console.log(`version=${result?.mysqlVersion ?? "unknown"}`);
   console.log(`tables=${tableNames.size}`);
-  console.log("MYSQL_SCHEMA_SMOKE_OK");
+  console.log("MYSQL_SCHEMA_COMPLETE_OK");
 } catch (error) {
   console.error("MYSQL_CONNECTION_FAILED");
   console.error(error instanceof Error ? error.message : String(error));
