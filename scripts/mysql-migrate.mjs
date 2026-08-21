@@ -105,14 +105,19 @@ async function migrationFiles() {
       baseline: true,
     }));
 
-  const partialPath = path.join(root, "database", "mysql", "003_partial_unique_constraints.sql");
-  drizzleFiles.push({
-    name: "database/mysql/003_partial_unique_constraints.sql",
-    filePath: partialPath,
-    drizzleStyle: false,
-    baseline: false,
-  });
-  return drizzleFiles;
+  const mysqlDir = path.join(root, "database", "mysql");
+  const supplemental = (await readdir(mysqlDir))
+    .filter((name) => /^\d{3}_.+\.sql$/.test(name))
+    .filter((name) => Number(name.slice(0, 3)) >= 3)
+    .sort()
+    .map((name) => ({
+      name: `database/mysql/${name}`,
+      filePath: path.join(mysqlDir, name),
+      drizzleStyle: false,
+      baseline: false,
+    }));
+
+  return [...drizzleFiles, ...supplemental];
 }
 
 async function ensureMigrationTable(connection) {
