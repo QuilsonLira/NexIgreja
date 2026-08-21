@@ -32,6 +32,8 @@ export function getMysqlPool() {
       idleTimeout: Number(process.env.DB_POOL_IDLE_TIMEOUT_MS ?? 60_000),
       enableKeepAlive: true,
       keepAliveInitialDelay: 0,
+      supportBigNumbers: true,
+      bigNumberStrings: false,
     });
   }
 
