@@ -26,3 +26,16 @@ timeout \
   "${vinext}" build
 
 "${script_dir}/validate-artifact.sh"
+
+# Hostinger's "Other" Node.js deployment works best with a top-level
+# output directory and a conventional entry file. Vinext's real standalone
+# server remains in dist/standalone; this tiny entrypoint only starts it.
+[[ -f "${SITES_PROJECT_ROOT}/dist/standalone/server.js" ]] || {
+  echo "Missing Vinext standalone server: dist/standalone/server.js" >&2
+  exit 66
+}
+cat > "${SITES_PROJECT_ROOT}/dist/server.js" <<'EOF'
+import "./standalone/server.js";
+EOF
+
+echo "Hostinger Node entry prepared: dist/server.js"
