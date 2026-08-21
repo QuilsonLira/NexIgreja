@@ -294,6 +294,8 @@ class MySqlD1CompatDatabase implements D1Database {
 const mysqlCompatDatabase = new MySqlD1CompatDatabase();
 
 export function isMysqlBackendConfigured(): boolean {
+  const enabled = /^(1|true|yes|on)$/i.test(process.env.MYSQL_RUNTIME_ENABLED?.trim() ?? "");
+  if (!enabled) return false;
   const value = process.env.DATABASE_URL?.trim() ?? "";
   return value.startsWith("mysql://") || value.startsWith("mysql2://");
 }
