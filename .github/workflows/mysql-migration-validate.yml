@@ -1,0 +1,135 @@
+name: MySQL migration validation
+
+on:
+  push:
+    branches:
+      - mysql-migration
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/nexigreja
+      MYSQL_RUNTIME_ENABLED: "true"
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: nexigreja
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Refresh lockfile for MySQL dependencies
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate MySQL schema
+        run: npm run db:mysql:schema
+
+      - name: Apply MySQL runtime patch
+        run: node scripts/apply-mysql-runtime-patch.mjs
+
+      - name: Validate TypeScript
+        run: npx tsc --noEmit
+
+      - name: Generate reviewed MySQL DDL candidate
+        run: |
+          rm -rf drizzle-mysql
+          npx drizzle-kit generate --config=drizzle.mysql.config.ts
+
+      - name: Normalize MySQL identifier lengths
+        run: npm run db:mysql:normalize
+
+      - name: Audit generated MySQL DDL
+        run: npm run db:mysql:audit
+
+      - name: Apply migrations to real MySQL 8
+        run: npm run db:mysql:migrate
+
+      - name: Verify migration status and schema
+        run: |
+          npm run db:mysql:status
+          npm run db:mysql:ping
+
+      - name: Validate native Next.js build on MySQL configuration
+        run: npm run build
+
+      - name: Create SQLite migration fixture
+        run: node scripts/create-sqlite-migration-fixture.mjs /tmp/nexigreja-source.sqlite
+
+      - name: Preflight SQLite to MySQL data migration
+        run: npm run db:mysql:import:preflight -- /tmp/nexigreja-source.sqlite
+
+      - name: Import SQLite data into MySQL
+        run: npm run db:mysql:import -- /tmp/nexigreja-source.sqlite
+
+      - name: Verify full SQLite to MySQL content parity
+        run: npm run db:mysql:verify -- /tmp/nexigreja-source.sqlite
+
+      - name: Verify BIGINT and BLOB preservation
+        run: node scripts/verify-mysql-import-fixture.mjs
+
+      - name: Package migration source snapshot
+        if: always()
+        run: |
+          rm -f /tmp/mysql-migration-source.tgz mysql-migration-source.tgz
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=.sites-runtime \
+            --exclude=.next \
+            -czf /tmp/mysql-migration-source.tgz .
+          cp /tmp/mysql-migration-source.tgz ./mysql-migration-source.tgz
+
+      - name: Commit generated migration artifacts
+        if: github.event_name == 'push' && github.ref == 'refs/heads/mysql-migration'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json db/schema.mysql.ts drizzle-mysql lib/server/auth.ts database/mysql/generated-identifier-map.json
+          if git diff --cached --quiet; then
+            echo "Generated MySQL artifacts already synchronized."
+          else
+            git commit -m "Sincroniza runtime e artefatos da migração MySQL"
+            git push origin HEAD:mysql-migration
+          fi
+
+      - name: Upload migration artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mysql-migration-artifacts
+          path: |
+            package-lock.json
+            db/schema.mysql.ts
+            drizzle-mysql/
+            database/mysql/003_partial_unique_constraints.sql
+            database/mysql/generated-identifier-map.json
+            mysql-migration-source.tgz
+          if-no-files-found: warn

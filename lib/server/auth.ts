@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { getMysqlD1CompatDatabase, isMysqlBackendConfigured } from "./mysql-d1-compat";
 import type {
   ActiveContext,
   AdministrativeSession,
@@ -255,6 +256,10 @@ function randomToken(size = 32): string {
 }
 
 export function database(): D1Database {
+  if (isMysqlBackendConfigured()) {
+    return getMysqlD1CompatDatabase();
+  }
+
   const db = (globalThis as typeof globalThis & { __NEXIGREJA_DB?: D1Database })
     .__NEXIGREJA_DB;
   if (!db) {
@@ -271,6 +276,19 @@ let databaseInitialization: Promise<void> | null = null;
 
 async function initializeDatabase(): Promise<void> {
   const db = database();
+
+  if (isMysqlBackendConfigured()) {
+    try {
+      await db.prepare("SELECT 1 AS ok FROM tenants LIMIT 1").first();
+    } catch {
+      throw new ApiError(
+        503,
+        "BANCO_MYSQL_NAO_PREPARADO",
+        "O banco MySQL ainda não recebeu a estrutura do NexIgreja.",
+      );
+    }
+    return;
+  }
   await db.batch([
     db.prepare(
       "CREATE TABLE IF NOT EXISTS tenants (id INTEGER PRIMARY KEY, name TEXT NOT NULL, slug TEXT NOT NULL UNIQUE, access_code TEXT NOT NULL UNIQUE CHECK (length(access_code) = 7 AND access_code NOT GLOB '*[^0-9]*'), status TEXT NOT NULL DEFAULT 'ATIVO' CHECK (status IN ('ATIVO', 'SUSPENSO', 'CANCELADO')), created_at TEXT NOT NULL, updated_at TEXT NOT NULL)",
