@@ -8,7 +8,8 @@
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
-    "build": "bash scripts/build-verified.sh",
+    "prebuild": "node -e \"console.log('HOSTINGER_BUILD_FIX_2026_08_21_0752')\"",
+    "build": "next build --webpack",
     "build:sites": "vinext build",
     "start": "next start",
     "start:sites": "node dist/server.js",
