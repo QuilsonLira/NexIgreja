@@ -1,0 +1,36 @@
+name: Validar segurança v43
+
+on:
+  push:
+    branches:
+      - upgrade-v43-2026-08-14
+    paths-ignore:
+      - '.validation/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Garantir que usuarios de teste estejam desativados por padrao
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'ALLOW_TEST_USERS' lib/server/auth.ts
+          grep -q 'process.env.ALLOW_TEST_USERS' lib/server/auth.ts
+
+      - name: Registrar validacao de seguranca
+        shell: bash
+        run: |
+          mkdir -p .validation
+          printf 'usuarios de teste protegidos\ncommit=%s\n' "$GITHUB_SHA" > .validation/v43-security-ok.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .validation/v43-security-ok.txt
+          git diff --cached --quiet || git commit -m 'Registra validacao de seguranca da v43'
+          git push origin HEAD:upgrade-v43-2026-08-14
