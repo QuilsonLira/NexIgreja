@@ -15,6 +15,7 @@
     "start:sites": "node dist/server.js",
     "db:mysql:schema": "node scripts/generate-mysql-schema.mjs",
     "db:mysql:generate": "npm run db:mysql:schema && drizzle-kit generate --config=drizzle.mysql.config.ts",
+    "db:mysql:normalize": "node scripts/normalize-mysql-identifiers.mjs",
     "db:mysql:audit": "node scripts/audit-mysql-ddl.mjs",
     "db:mysql:migrate": "node scripts/mysql-migrate.mjs",
     "db:mysql:status": "node scripts/mysql-migrate.mjs --status",
