@@ -1,0 +1,15 @@
+import { readFileSync, writeFileSync } from "node:fs";
+
+const path = "db/mysql.ts";
+const source = readFileSync(path, "utf8");
+
+const start = source.indexOf("function requireDatabaseUrl()");
+const end = source.indexOf("export function getMysqlPool()", start);
+if (start < 0 || end < 0) {
+  throw new Error("Bloco de configuração MySQL não encontrado");
+}
+
+const replacement = `function positiveInteger(value: string | undefined, fallback: number): number {\n  const parsed = Number(value);\n  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;\n}\n\nfunction connectionFromSeparateEnvironment(): mysql.PoolOptions | null {\n  const host = process.env.DB_HOST?.trim();\n  const user = process.env.DB_USER?.trim();\n  const password = process.env.DB_PASSWORD;\n  const database = process.env.DB_NAME?.trim();\n\n  const anyProvided = Boolean(host || user || password !== undefined || database);\n  if (!anyProvided) return null;\n\n  if (!host || !user || password === undefined || !database) {\n    throw new Error(\n      \"DB_HOST, DB_USER, DB_PASSWORD e DB_NAME precisam estar todos configurados quando variáveis MySQL separadas forem usadas.\",\n    );\n  }\n\n  return {\n    host,\n    port: positiveInteger(process.env.DB_PORT, 3306),\n    user,\n    password,\n    database,\n  };\n}\n\nfunction connectionFromDatabaseUrl(): mysql.PoolOptions {\n  const databaseUrl = process.env.DATABASE_URL?.trim();\n  if (!databaseUrl) {\n    throw new Error(\n      \"Configure DB_HOST/DB_USER/DB_PASSWORD/DB_NAME ou DATABASE_URL para o backend MySQL.\",\n    );\n  }\n\n  if (!databaseUrl.startsWith(\"mysql://\") && !databaseUrl.startsWith(\"mysql2://\")) {\n    throw new Error(\"DATABASE_URL must use the mysql:// protocol.\");\n  }\n\n  const normalizedUrl = databaseUrl.startsWith(\"mysql2://\")\n    ? \"mysql://\" + databaseUrl.slice(9)\n    : databaseUrl;\n  const parsed = new URL(normalizedUrl);\n  const database = decodeURIComponent(parsed.pathname.replace(/^\\//, \"\"));\n\n  if (!parsed.hostname || !parsed.username || !database) {\n    throw new Error(\"DATABASE_URL must include host, user and database name.\");\n  }\n\n  return {\n    host: parsed.hostname,\n    port: parsed.port ? positiveInteger(parsed.port, 3306) : 3306,\n    user: decodeURIComponent(parsed.username),\n    password: decodeURIComponent(parsed.password),\n    database,\n  };\n}\n\nfunction mysqlPoolConfig(): mysql.PoolOptions {\n  const connection = connectionFromSeparateEnvironment() ?? connectionFromDatabaseUrl();\n\n  return {\n    ...connection,\n    waitForConnections: true,\n    connectionLimit: positiveInteger(process.env.DB_POOL_SIZE, 10),\n    maxIdle: positiveInteger(process.env.DB_POOL_MAX_IDLE, 10),\n    idleTimeout: positiveInteger(process.env.DB_POOL_IDLE_TIMEOUT_MS, 60_000),\n    connectTimeout: positiveInteger(process.env.DB_CONNECT_TIMEOUT_MS, 10_000),\n    enableKeepAlive: true,\n    keepAliveInitialDelay: 0,\n    supportBigNumbers: true,\n    bigNumberStrings: false,\n  };\n}\n\n`;
+
+writeFileSync(path, source.slice(0, start) + replacement + source.slice(end));
+console.log("MYSQL_ENV_CONFIG_PATCH_OK");
