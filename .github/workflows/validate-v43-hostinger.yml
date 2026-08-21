@@ -1,0 +1,43 @@
+name: Validar v43 Hostinger
+
+on:
+  push:
+    branches:
+      - upgrade-v43-2026-08-14
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm install --legacy-peer-deps --ignore-scripts
+
+      - name: TypeScript
+        run: npm run typecheck
+
+      - name: Build Next.js
+        env:
+          DATABASE_URL: mysql://build_user:build_pass@127.0.0.1:3306/nexigreja_build
+          APP_ORIGIN: https://example.com
+          SESSION_HMAC_KEY: build-only-session-key-00000000000000000000000000000000
+          CPF_LOOKUP_HMAC_KEY: build-only-cpf-key-000000000000000000000000000000000
+          AUDIT_HMAC_KEY: build-only-audit-key-00000000000000000000000000000000
+          SESSION_TTL_HOURS: '12'
+          AUTH_MAX_ATTEMPTS: '5'
+          AUTH_BLOCK_MINUTES: '15'
+          COOKIE_SECURE: 'true'
+        run: npm run build

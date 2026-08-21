@@ -1,0 +1,266 @@
+name: Aplicar v43 Hostinger com seguranca
+
+on:
+  push:
+    branches:
+      - upgrade-v43-2026-08-14
+    paths:
+      - '.github/workflows/apply-v43-hostinger.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    services:
+      mariadb:
+        image: mariadb:11
+        env:
+          MARIADB_ROOT_PASSWORD: build_root_password
+          MARIADB_DATABASE: nexigreja_build
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+
+    env:
+      DATABASE_URL: mysql://root:build_root_password@127.0.0.1:3306/nexigreja_build
+      APP_ORIGIN: https://example.invalid
+      SESSION_HMAC_KEY: build-only-session-key-00000000000000000000000000000000
+      CPF_LOOKUP_HMAC_KEY: build-only-cpf-key-000000000000000000000000000000000
+      AUDIT_HMAC_KEY: build-only-audit-key-00000000000000000000000000000000
+      SESSION_TTL_HOURS: '12'
+      AUTH_MAX_ATTEMPTS: '5'
+      AUTH_BLOCK_MINUTES: '15'
+      COOKIE_SECURE: 'true'
+      BOOTSTRAP_ADMIN_PASSWORD: build-only-temporary-password-not-for-production
+      BOOTSTRAP_ADMIN_USERNAME: buildadmin
+      BOOTSTRAP_ADMIN_NAME: Build Admin
+      BOOTSTRAP_ADMIN_EMAIL: buildadmin@example.invalid
+      BOOTSTRAP_ADMIN_CPF: '00000000000'
+
+    steps:
+      - name: Checkout da branch de atualizacao
+        uses: actions/checkout@v4
+        with:
+          ref: upgrade-v43-2026-08-14
+          fetch-depth: 0
+
+      - name: Reconstruir pacote v43 original
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .upgrade/v43-000.b64
+          COUNT="$(find .upgrade -maxdepth 1 -type f -name 'v43-[0-9][0-9][0-9].b64' | wc -l | tr -d ' ')"
+          test "$COUNT" -eq 12
+          cat .upgrade/v43-[0-9][0-9][0-9].b64 > /tmp/v43.b64
+          base64 -d /tmp/v43.b64 > /tmp/v43.tar.xz
+          xz -t /tmp/v43.tar.xz
+          tar -tJf /tmp/v43.tar.xz >/dev/null
+          rm -rf /tmp/v43-src-root
+          mkdir -p /tmp/v43-src-root
+          tar -xJf /tmp/v43.tar.xz -C /tmp/v43-src-root
+          PACKAGE="$(find /tmp/v43-src-root -maxdepth 4 -name package.json -print -quit)"
+          test -n "$PACKAGE"
+          SRC="$(dirname "$PACKAGE")"
+          node -e "const p=require('$SRC/package.json'); if(p.version!=='0.43.0') throw new Error('Pacote esperado: 0.43.0')"
+          test -f "$SRC/lib/server/auth.ts"
+          test -f "$SRC/lib/server/mysql-d1.ts"
+          test -f "$SRC/mysql/schema.sql"
+          test -f "$SRC/scripts/mysql-migrate.mjs"
+          test -f "$SRC/next.config.mjs"
+          grep -R -q '/api/public/institution' "$SRC/components" "$SRC/app"
+          grep -R -Eq 'maxLength=\{7\}|7.{0,40}(d[ií]git|digit)' "$SRC/components" "$SRC/app"
+          printf '%s' "$SRC" > /tmp/v43-src-path
+
+      - name: Remover usuarios de demonstracao e preparar bootstrap seguro
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$(cat /tmp/v43-src-path)"
+          python3 - "$SRC" <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          root = Path(sys.argv[1])
+          auth = root / "lib/server/auth.ts"
+          text = auth.read_text(encoding="utf-8")
+
+          bootstrap = r'''type BootstrapUser = {
+            id: number;
+            name: string;
+            username: string;
+            email: string;
+            cpf: string;
+            password: string;
+            roleName: string;
+            scope: "CONVENCAO";
+            tenantId: null;
+            unitId: number;
+          };
+
+          function getBootstrapUsers(): BootstrapUser[] {
+            const password = process.env.BOOTSTRAP_ADMIN_PASSWORD?.trim();
+            if (!password) return [];
+
+            const username = process.env.BOOTSTRAP_ADMIN_USERNAME?.trim() || "admin";
+            const name = process.env.BOOTSTRAP_ADMIN_NAME?.trim() || "Administrador NexIgreja";
+            const email = process.env.BOOTSTRAP_ADMIN_EMAIL?.trim() || "admin@nexigreja.local";
+            const cpf = (process.env.BOOTSTRAP_ADMIN_CPF || "00000000000").replace(/\D/g, "");
+
+            if (cpf.length !== 11) {
+              throw new Error("BOOTSTRAP_ADMIN_CPF deve conter 11 dígitos");
+            }
+
+            return [
+              {
+                id: 1,
+                name,
+                username,
+                email,
+                cpf,
+                password,
+                roleName: "Proprietário da Plataforma",
+                scope: "CONVENCAO" as const,
+                tenantId: null,
+                unitId: 1,
+              },
+            ];
+          }
+
+          const BOOTSTRAP_USERS = getBootstrapUsers();'''
+
+          pattern = re.compile(
+              r"const\s+(?:BUILTIN_)?TEST_USERS\s*=\s*\[.*?\n\];(?=\n\nconst TEST_ADMIN_PERMISSIONS)",
+              re.S,
+          )
+          text, count = pattern.subn(bootstrap, text, count=1)
+          if count != 1:
+              raise SystemExit("Bloco estrutural de usuarios de demonstracao nao encontrado")
+
+          text, count = re.subn(
+              r"for \(const user of (?:BUILTIN_)?TEST_USERS\)",
+              "for (const user of BOOTSTRAP_USERS)",
+              text,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit("Loop de bootstrap nao encontrado")
+
+          text, count = re.subn(
+              r"user\.passwordHash,",
+              "await bcrypt.hash(user.password, 12),",
+              text,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit("Uso de hash fixo nao encontrado")
+
+          text, count = re.subn(
+              r"(VALUES \(\?, \?, \?, \?, \?, \?, \?, \?, \?, 'ATIVO', )0(, 0, \?, \?\))",
+              r"\g<1>1\g<2>",
+              text,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit("Flag must_change_password nao encontrada")
+
+          auth.write_text(text, encoding="utf-8")
+
+          readme = root / "README.md"
+          if readme.exists():
+              r = readme.read_text(encoding="utf-8")
+              replacement = '''## Acesso inicial de produção
+
+          O acesso organizacional começa pelo código institucional de 7 dígitos. O proprietário da plataforma entra separadamente em `/platform/login`, sem código institucional.
+
+          Em uma instalação com banco vazio, configure `BOOTSTRAP_ADMIN_PASSWORD` e, opcionalmente, `BOOTSTRAP_ADMIN_USERNAME`, `BOOTSTRAP_ADMIN_NAME`, `BOOTSTRAP_ADMIN_EMAIL` e `BOOTSTRAP_ADMIN_CPF` no ambiente de hospedagem. A conta inicial exige troca de senha no primeiro acesso.
+
+          Não mantenha senhas, CPFs ou credenciais reais dentro do repositório.
+          '''
+              r, changed = re.subn(
+                  r"## Acessos fictícios de teste\n.*?(?=\n## Estrutura principal)",
+                  replacement.rstrip(),
+                  r,
+                  count=1,
+                  flags=re.S,
+              )
+              if changed:
+                  readme.write_text(r, encoding="utf-8")
+          PY
+
+          ! grep -qE 'const[[:space:]]+(BUILTIN_)?TEST_USERS[[:space:]]*=' "$SRC/lib/server/auth.ts"
+          ! grep -q 'user.passwordHash' "$SRC/lib/server/auth.ts"
+          grep -q 'BOOTSTRAP_ADMIN_PASSWORD' "$SRC/lib/server/auth.ts"
+          grep -q 'BOOTSTRAP_USERS' "$SRC/lib/server/auth.ts"
+          grep -q "'ATIVO', 1, 0" "$SRC/lib/server/auth.ts"
+
+      - name: Preparar arvore final da v43
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC="$(cat /tmp/v43-src-path)"
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$SRC"/. .
+          rm -rf .upgrade .validation
+          rm -f package-lock.json
+          node -e "const p=require('./package.json'); if(p.version!=='0.43.0') throw new Error('Versao incorreta')"
+          test -f lib/server/mysql-d1.ts
+          test -f mysql/schema.sql
+          test -f scripts/mysql-migrate.mjs
+          test -f next.config.mjs
+          grep -R -q '/api/public/institution' components app
+          grep -R -Eq 'maxLength=\{7\}|7.{0,40}(d[ií]git|digit)' components app
+          TABLES="$(grep -Eic '^CREATE TABLE IF NOT EXISTS' mysql/schema.sql)"
+          test "$TABLES" -eq 108
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias
+        run: npm install --legacy-peer-deps --ignore-scripts --package-lock=false
+
+      - name: Migrar schema em MariaDB limpo
+        run: npm run db:migrate
+
+      - name: Conferir 108 tabelas migradas
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import mysql from 'mysql2/promise';
+          const connection = await mysql.createConnection(process.env.DATABASE_URL);
+          const [rows] = await connection.query(
+            "SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema='nexigreja_build'"
+          );
+          const count = Number(rows[0].n);
+          console.log('Tabelas criadas:', count);
+          if (count < 108) throw new Error(`Schema incompleto: ${count}/108 tabelas`);
+          await connection.end();
+          NODE
+
+      - name: Validar TypeScript
+        run: npm run typecheck
+
+      - name: Validar build Next.js
+        run: npm run build
+
+      - name: Publicar v43 validada na branch segura
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && { echo 'Nenhuma alteracao para publicar'; exit 1; }
+          git commit -m 'Aplica NexIgreja v43 segura e validada para Hostinger'
+          git push origin HEAD:upgrade-v43-2026-08-14

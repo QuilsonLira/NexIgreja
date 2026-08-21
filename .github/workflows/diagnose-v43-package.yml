@@ -1,0 +1,50 @@
+name: Diagnosticar pacote v43
+
+on:
+  push:
+    branches:
+      - upgrade-v43-2026-08-14
+    paths:
+      - '.github/workflows/diagnose-v43-package.yml'
+  pull_request:
+    branches:
+      - main
+    types: [synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: upgrade-v43-2026-08-14
+      - name: Reconstruir decodificando cada parte
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo '=== conjunto original v43-000..011 ==='
+          : > /tmp/original.tar.xz
+          for f in .upgrade/v43-[0-9][0-9][0-9].b64; do
+            echo "decodificando $f"
+            base64 -d "$f" >> /tmp/original.tar.xz
+          done
+          file /tmp/original.tar.xz
+          xz -t /tmp/original.tar.xz
+          tar -tJf /tmp/original.tar.xz | head -20
+          sha256sum /tmp/original.tar.xz
+
+          echo '=== conjunto hostinger/part-* ==='
+          : > /tmp/hostinger.tar.xz
+          for f in .upgrade/hostinger/part-*; do
+            echo "decodificando $f"
+            base64 -d "$f" >> /tmp/hostinger.tar.xz
+          done
+          file /tmp/hostinger.tar.xz
+          xz -t /tmp/hostinger.tar.xz
+          tar -tJf /tmp/hostinger.tar.xz | head -20
+          sha256sum /tmp/hostinger.tar.xz
