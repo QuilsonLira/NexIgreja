@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { access } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -8,7 +9,8 @@ const args = new Set(process.argv.slice(2));
 const sourceArg = process.argv.slice(2).find((value) => !value.startsWith("--"));
 const sourcePath = path.resolve(sourceArg ?? process.env.SQLITE_SOURCE_PATH ?? "");
 const preflightOnly = args.has("--preflight");
-const allowNonEmpty = args.has("--allow-nonempty-target");
+const verifyOnly = args.has("--verify-only");
+const allowNonEmpty = args.has("--allow-nonempty-target") || verifyOnly;
 const batchSize = Math.max(1, Math.min(1000, Number(process.env.MIGRATION_BATCH_SIZE ?? 200)));
 
 function requireDatabaseUrl() {
@@ -187,7 +189,12 @@ async function buildPlan(sqlite, connection) {
 
     const countRow = sqlite.prepare(`SELECT COUNT(*) AS count FROM ${quoteIdentifier(tableName)}`).get();
     const sourceCount = Number(countRow?.count ?? 0);
-    plan.push({ tableName, columns: insertColumns.map((column) => column.name), sourceCount });
+    plan.push({
+      tableName,
+      columns: insertColumns.map((column) => column.name),
+      columnMeta: Object.fromEntries(insertColumns.map((column) => [column.name, column])),
+      sourceCount,
+    });
   }
 
   return { plan, warnings };
@@ -215,7 +222,7 @@ async function insertTable(sqlite, connection, item) {
   return inserted;
 }
 
-async function verifyCounts(sqlite, connection, plan) {
+async function verifyCounts(_sqlite, connection, plan) {
   const failures = [];
   for (const item of plan) {
     const [rows] = await connection.query(
@@ -228,6 +235,72 @@ async function verifyCounts(sqlite, connection, plan) {
   }
   if (failures.length) {
     throw new Error(`Row-count verification failed: ${failures.slice(0, 20).join("; ")}`);
+  }
+}
+
+function stableJson(value) {
+  if (Array.isArray(value)) return value.map(stableJson);
+  if (value && typeof value === "object" && !Buffer.isBuffer(value) && !(value instanceof Uint8Array)) {
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, stableJson(value[key])]),
+    );
+  }
+  return value;
+}
+
+function canonicalValue(value, meta) {
+  if (value === null || value === undefined) return "null";
+  if (Buffer.isBuffer(value)) return `blob:${value.toString("base64")}`;
+  if (value instanceof Uint8Array) return `blob:${Buffer.from(value).toString("base64")}`;
+  if (meta?.dataType === "json") {
+    let parsed = value;
+    if (typeof value === "string") {
+      try {
+        parsed = JSON.parse(value);
+      } catch {
+        return `json-text:${value}`;
+      }
+    }
+    return `json:${JSON.stringify(stableJson(parsed))}`;
+  }
+  if (typeof value === "number" || typeof value === "bigint") return `num:${String(value)}`;
+  if (typeof value === "boolean") return `num:${value ? 1 : 0}`;
+  return `str:${String(value)}`;
+}
+
+function tableDigest(rows, item) {
+  const canonicalRows = rows.map((row) =>
+    item.columns
+      .map((column) => `${column}=${canonicalValue(row[column], item.columnMeta[column])}`)
+      .join("\u001f"),
+  );
+  canonicalRows.sort();
+  const hash = createHash("sha256");
+  for (const line of canonicalRows) hash.update(line).update("\n");
+  return hash.digest("hex");
+}
+
+async function verifyContentHashes(sqlite, connection, plan) {
+  const failures = [];
+  for (const item of plan) {
+    if (item.columns.length === 0) continue;
+    const projection = item.columns.map(quoteIdentifier).join(", ");
+    const sourceRows = sqlite
+      .prepare(`SELECT ${projection} FROM ${quoteIdentifier(item.tableName)}`)
+      .all();
+    const [targetRows] = await connection.query(
+      `SELECT ${projection} FROM ${quoteIdentifier(item.tableName)}`,
+    );
+    const sourceHash = tableDigest(sourceRows, item);
+    const targetHash = tableDigest(targetRows, item);
+    if (sourceHash !== targetHash) {
+      failures.push(`${item.tableName}: source=${sourceHash.slice(0, 12)} target=${targetHash.slice(0, 12)}`);
+    }
+  }
+  if (failures.length) {
+    throw new Error(`Content-hash verification failed: ${failures.slice(0, 20).join("; ")}`);
   }
 }
 
@@ -297,9 +370,17 @@ async function verifyForeignKeys(connection) {
   }
 }
 
+async function verifyAll(sqlite, connection, plan) {
+  await verifyCounts(sqlite, connection, plan);
+  await verifyForeignKeys(connection);
+  await verifyContentHashes(sqlite, connection, plan);
+}
+
 async function main() {
   if (!sourceArg && !process.env.SQLITE_SOURCE_PATH) {
-    throw new Error("Usage: node scripts/migrate-sqlite-data-to-mysql.mjs /path/to/d1.sqlite [--preflight]");
+    throw new Error(
+      "Usage: node scripts/migrate-sqlite-data-to-mysql.mjs /path/to/d1.sqlite [--preflight|--verify-only]",
+    );
   }
   await access(sourcePath);
 
@@ -321,6 +402,12 @@ async function main() {
 
     if (preflightOnly) return;
 
+    if (verifyOnly) {
+      await verifyAll(sqlite, connection, plan);
+      console.log(`SQLITE_TO_MYSQL_VERIFY_OK tables=${plan.length} rows=${totalRows}`);
+      return;
+    }
+
     await connection.query("SET FOREIGN_KEY_CHECKS = 0");
     await connection.beginTransaction();
     try {
@@ -328,8 +415,7 @@ async function main() {
         const inserted = await insertTable(sqlite, connection, item);
         console.log(`COPIED ${item.tableName} rows=${inserted}`);
       }
-      await verifyCounts(sqlite, connection, plan);
-      await verifyForeignKeys(connection);
+      await verifyAll(sqlite, connection, plan);
       await connection.commit();
     } catch (error) {
       await connection.rollback();
