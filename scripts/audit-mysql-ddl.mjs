@@ -26,6 +26,12 @@ if (tables.size < 85) {
 const riskyType = (type) => /\b(TEXT|BLOB|MEDIUMBLOB|LONGBLOB|JSON)\b/.test(type ?? "");
 const failures = [];
 
+for (const match of sql.matchAll(/`([^`]+)`/g)) {
+  if (match[1].length > 64) {
+    failures.push(`MySQL identifier exceeds 64 characters (${match[1].length}): ${match[1]}`);
+  }
+}
+
 function inspectKey(tableName, keyName, expression) {
   const table = tables.get(tableName);
   if (!table) return;
@@ -71,7 +77,7 @@ for (const required of [
 
 if (failures.length) {
   console.error("MySQL DDL audit failed:");
-  for (const failure of failures) console.error(`- ${failure}`);
+  for (const failure of [...new Set(failures)]) console.error(`- ${failure}`);
   process.exit(1);
 }
 
