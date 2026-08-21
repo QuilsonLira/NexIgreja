@@ -15,7 +15,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout
@@ -36,6 +36,9 @@ jobs:
       - name: Generate MySQL schema
         run: npm run db:mysql:schema
 
+      - name: Apply MySQL runtime patch
+        run: node scripts/apply-mysql-runtime-patch.mjs
+
       - name: Validate TypeScript
         run: npx tsc --noEmit
 
@@ -47,6 +50,9 @@ jobs:
       - name: Audit generated MySQL DDL
         run: npm run db:mysql:audit
 
+      - name: Validate native Next.js build
+        run: npm run build
+
       - name: Package migration source snapshot
         if: always()
         run: |
@@ -55,6 +61,7 @@ jobs:
             --exclude=.git \
             --exclude=node_modules \
             --exclude=.sites-runtime \
+            --exclude=.next \
             -czf /tmp/mysql-migration-source.tgz .
           cp /tmp/mysql-migration-source.tgz ./mysql-migration-source.tgz
 
@@ -63,11 +70,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json db/schema.mysql.ts drizzle-mysql
+          git add package-lock.json db/schema.mysql.ts drizzle-mysql lib/server/auth.ts
           if git diff --cached --quiet; then
             echo "Generated MySQL artifacts already synchronized."
           else
-            git commit -m "Sincroniza artefatos gerados da migração MySQL"
+            git commit -m "Sincroniza runtime e artefatos da migração MySQL"
             git push origin HEAD:mysql-migration
           fi
 
