@@ -972,13 +972,61 @@ export function clearInstitutionCookie(request: Request): string {
   return institutionCookie(request, "", 0);
 }
 
+function normalizedHttpOrigin(value: string | null | undefined): string | null {
+  const raw = value?.trim();
+  if (!raw) return null;
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    return parsed.origin;
+  } catch {
+    return null;
+  }
+}
+
+function firstForwardedHeader(value: string | null): string | null {
+  const first = value?.split(",", 1)[0]?.trim();
+  return first || null;
+}
+
 export function assertTrustedOrigin(request: Request): void {
-  const origin = request.headers.get("origin");
+  const requestOrigin = normalizedHttpOrigin(new URL(request.url).origin);
+  const origin = normalizedHttpOrigin(request.headers.get("origin"));
   const fetchSite = request.headers.get("sec-fetch-site");
-  if (
-    (origin && origin !== new URL(request.url).origin) ||
-    fetchSite === "cross-site"
-  ) {
+
+  if (fetchSite === "cross-site") {
+    throw new ApiError(
+      403,
+      "ORIGEM_NAO_AUTORIZADA",
+      "Solicitação não autorizada.",
+    );
+  }
+
+  if (!origin) return;
+
+  const trustedOrigins = new Set<string>();
+  if (requestOrigin) trustedOrigins.add(requestOrigin);
+
+  const configuredOrigin = normalizedHttpOrigin(process.env.APP_ORIGIN);
+  if (configuredOrigin) trustedOrigins.add(configuredOrigin);
+
+  const forwardedHost = firstForwardedHeader(request.headers.get("x-forwarded-host"));
+  const forwardedProto = firstForwardedHeader(request.headers.get("x-forwarded-proto"));
+  if (forwardedHost && (forwardedProto === "https" || forwardedProto === "http")) {
+    const forwardedOrigin = normalizedHttpOrigin(forwardedProto + "://" + forwardedHost);
+    if (forwardedOrigin) trustedOrigins.add(forwardedOrigin);
+  }
+
+  const host = firstForwardedHeader(request.headers.get("host"));
+  const effectiveProto = forwardedProto === "http" || forwardedProto === "https"
+    ? forwardedProto
+    : new URL(request.url).protocol.replace(":", "");
+  if (host && (effectiveProto === "http" || effectiveProto === "https")) {
+    const hostOrigin = normalizedHttpOrigin(effectiveProto + "://" + host);
+    if (hostOrigin) trustedOrigins.add(hostOrigin);
+  }
+
+  if (!trustedOrigins.has(origin)) {
     throw new ApiError(
       403,
       "ORIGEM_NAO_AUTORIZADA",
