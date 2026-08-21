@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - fix-hostinger-origin
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
