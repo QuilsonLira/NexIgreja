@@ -78,6 +78,29 @@ jobs:
           npm run db:mysql:status
           npm run db:mysql:ping
 
+      - name: Create platform-owner SQLite fixture
+        run: node scripts/create-platform-owner-fixture.mjs /tmp/platform-owner.sqlite
+
+      - name: Seed only platform owner
+        run: npm run db:mysql:owner:seed -- /tmp/platform-owner.sqlite
+
+      - name: Verify platform owner seed
+        run: npm run db:mysql:owner:verify -- /tmp/platform-owner.sqlite
+
+      - name: Reset platform-owner fixture rows
+        run: |
+          node --input-type=module <<'NODE'
+          import mysql from 'mysql2/promise';
+          const connection = await mysql.createConnection(process.env.DATABASE_URL);
+          try {
+            await connection.query('DELETE FROM platform_owners');
+            await connection.query('DELETE FROM auth_users');
+          } finally {
+            await connection.end();
+          }
+          console.log('PLATFORM_OWNER_FIXTURE_RESET_OK');
+          NODE
+
       - name: Validate native Next.js build on MySQL configuration
         run: npm run build
 
