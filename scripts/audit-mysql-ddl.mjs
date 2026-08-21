@@ -32,6 +32,18 @@ for (const match of sql.matchAll(/`([^`]+)`/g)) {
   }
 }
 
+for (const [tableName, table] of tables) {
+  for (const [columnName, type] of table.columns) {
+    const mustBeBigInt =
+      columnName === "id" ||
+      columnName.endsWith("_id") ||
+      columnName.endsWith("_cents");
+    if (mustBeBigInt && !/\bBIGINT\b/.test(type)) {
+      failures.push(`${tableName}.${columnName} must use BIGINT, generated ${type}`);
+    }
+  }
+}
+
 function inspectKey(tableName, keyName, expression) {
   const table = tables.get(tableName);
   if (!table) return;
