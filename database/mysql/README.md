@@ -1,25 +1,30 @@
 # Configuração MySQL 8
 
-## Estado da migração
+## Estado atual
 
-A migração para MySQL está sendo feita na branch `mysql-migration` para não interromper a versão atual enquanto o schema completo ainda usa SQLite/D1.
+A migração do NexIgreja para MySQL está isolada na branch `mysql-migration` até a aplicação segura no banco da Hostinger.
 
-A primeira etapa já contém:
+A branch já contém:
 
-- driver `mysql2`;
-- adaptador `db/mysql.ts` usando `DATABASE_URL`;
-- pool de conexões para o backend;
-- teste de conectividade `npm run db:mysql:ping`;
-- scripts SQL MySQL já existentes nesta pasta.
+- `mysql2` e pool de conexões usando `DATABASE_URL`;
+- runtime que escolhe MySQL automaticamente quando `DATABASE_URL` usa `mysql://`;
+- camada de compatibilidade para a interface D1 usada pelos módulos existentes;
+- schema MySQL das 85 tabelas;
+- DDL gerado em `drizzle-mysql/`;
+- correções de unicidade parcial em `003_partial_unique_constraints.sql`;
+- normalização de nomes de constraints/índices para o limite de 64 caracteres do MySQL;
+- runner idempotente de migrations com checksum;
+- teste automático contra MySQL 8 real no GitHub Actions;
+- build nativo do Next.js validado com configuração MySQL.
 
-O adaptador D1 atual não deve ser removido até que todo `db/schema.ts` e as consultas dependentes sejam convertidos e validados para MySQL.
+A validação automatizada já conseguiu criar a estrutura completa em um MySQL 8 vazio, conferir tabelas essenciais e compilar o Next.js usando o backend MySQL.
 
 ## Configuração na Hostinger
 
-Use uma variável de ambiente apenas no backend:
+A conexão deve existir somente como variável de ambiente do backend:
 
 ```text
-DATABASE_URL=mysql://usuario:senha@servidor:3306/nexigreja
+DATABASE_URL=mysql://usuario:senha@servidor:3306/nome_do_banco
 ```
 
 Nunca grave usuário, senha ou a `DATABASE_URL` real no GitHub.
@@ -32,28 +37,45 @@ DB_POOL_MAX_IDLE=10
 DB_POOL_IDLE_TIMEOUT_MS=60000
 ```
 
-## Teste da conexão
+## Comandos oficiais da migração
 
-Depois de instalar as dependências da branch e com `DATABASE_URL` configurada:
+Verificar a conexão e a estrutura mínima:
 
 ```bash
 npm run db:mysql:ping
 ```
 
-Sucesso esperado:
+Ver o estado das migrations:
 
-```text
-MYSQL_CONNECTION_OK
-database=<nome-do-banco>
-version=<versao-mysql>
+```bash
+npm run db:mysql:status
 ```
 
-O comando não imprime a senha nem a string de conexão.
+Aplicar migrations pendentes:
 
-## Estrutura SQL existente
+```bash
+npm run db:mysql:migrate
+```
 
-1. `001_auth_foundation.sql` contém a fundação inicial de autenticação em MySQL.
-2. `002_administration.sql` contém a estrutura administrativa complementar existente.
-3. `002_test_seed.sql` é somente para ambiente de teste e não deve ser usado no banco real sem revisão.
+O runner cria `_nexigreja_migrations`, registra checksum de cada arquivo aplicado e recusa executar o baseline automaticamente se detectar um banco já preenchido sem histórico de migration.
 
-Não execute os scripts no banco de produção antes de concluir a compatibilização do schema e preparar o plano de importação dos dados D1/SQLite.
+## Fonte oficial da estrutura
+
+Para a migração atual, a estrutura canônica é:
+
+1. SQL gerado em `drizzle-mysql/*.sql`;
+2. `database/mysql/003_partial_unique_constraints.sql`.
+
+Os arquivos antigos `001_auth_foundation.sql`, `002_administration.sql` e `002_test_seed.sql` permanecem apenas como histórico da preparação inicial. Não use `002_test_seed.sql` no banco real.
+
+## Ordem segura para produção
+
+1. Manter o banco D1/SQLite original intacto como fonte dos dados existentes.
+2. Confirmar que o banco MySQL da Hostinger está vazio ou revisar qualquer tabela já existente.
+3. Aplicar `npm run db:mysql:migrate` no banco MySQL.
+4. Confirmar `npm run db:mysql:status` e `npm run db:mysql:ping`.
+5. Só então integrar a branch MySQL na `main` e implantar o aplicativo apontando para esse banco.
+6. Migrar os dados D1/SQLite para MySQL preservando IDs, relacionamentos e escopo de tenant.
+7. Comparar contagens e registros críticos antes de desativar o banco antigo.
+
+Não apague nem sobrescreva o banco antigo durante essa transição.
