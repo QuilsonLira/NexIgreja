@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6d1817a7-566b-496d-9179-41e063296db5",
+  "id": "bb8468f9-3ec0-4361-9b68-5d170440675e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "administration_audit": {
@@ -121,8 +121,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "administration_audit_actor_membership_id_tenant_memberships_id_fk": {
-          "name": "administration_audit_actor_membership_id_tenant_memberships_id_fk",
+        "administration_audit_actor_membership_id_tenant_m_8c17683fc102e9": {
+          "name": "administration_audit_actor_membership_id_tenant_m_8c17683fc102e9",
           "tableFrom": "administration_audit",
           "tableTo": "tenant_memberships",
           "columnsFrom": [
@@ -5022,8 +5022,8 @@
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {
-        "finance_contribution_category_defaults_tenant_id_contribution_type_pk": {
-          "name": "finance_contribution_category_defaults_tenant_id_contribution_type_pk",
+        "finance_contribution_category_defaults_tenant_id__7797fab2d67b61": {
+          "name": "finance_contribution_category_defaults_tenant_id__7797fab2d67b61",
           "columns": [
             "tenant_id",
             "contribution_type"
@@ -6985,8 +6985,8 @@
         }
       },
       "compositePrimaryKeys": {
-        "member_pre_registration_custom_values_pre_registration_id_field_id_pk": {
-          "name": "member_pre_registration_custom_values_pre_registration_id_field_id_pk",
+        "member_pre_registration_custom_values_pre_registr_21b6d6870321ab": {
+          "name": "member_pre_registration_custom_values_pre_registr_21b6d6870321ab",
           "columns": [
             "pre_registration_id",
             "field_id"
@@ -7111,8 +7111,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "member_pre_registration_forms_created_by_user_id_auth_users_id_fk": {
-          "name": "member_pre_registration_forms_created_by_user_id_auth_users_id_fk",
+        "member_pre_registration_forms_created_by_user_id__e97524f26770dc": {
+          "name": "member_pre_registration_forms_created_by_user_id__e97524f26770dc",
           "tableFrom": "member_pre_registration_forms",
           "tableTo": "auth_users",
           "columnsFrom": [
@@ -9915,8 +9915,8 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "secretary_document_template_versions_template_id_secretary_document_templates_id_fk": {
-          "name": "secretary_document_template_versions_template_id_secretary_document_templates_id_fk",
+        "secretary_document_template_versions_template_id__cb8f1bbd5c8697": {
+          "name": "secretary_document_template_versions_template_id__cb8f1bbd5c8697",
           "tableFrom": "secretary_document_template_versions",
           "tableTo": "secretary_document_templates",
           "columnsFrom": [
@@ -10163,8 +10163,8 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "secretary_documents_template_id_secretary_document_templates_id_fk": {
-          "name": "secretary_documents_template_id_secretary_document_templates_id_fk",
+        "secretary_documents_template_id_secretary_documen_441d68d3f5f522": {
+          "name": "secretary_documents_template_id_secretary_documen_441d68d3f5f522",
           "tableFrom": "secretary_documents",
           "tableTo": "secretary_document_templates",
           "columnsFrom": [

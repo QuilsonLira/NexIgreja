@@ -573,7 +573,7 @@ CREATE TABLE `finance_contribution_category_defaults` (
 	`updated_by_user_id` int NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
-	CONSTRAINT `finance_contribution_category_defaults_tenant_id_contribution_type_pk` PRIMARY KEY(`tenant_id`,`contribution_type`)
+	CONSTRAINT `finance_contribution_category_defaults_tenant_id__7797fab2d67b61` PRIMARY KEY(`tenant_id`,`contribution_type`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_interunit_repass_events` (
@@ -828,7 +828,7 @@ CREATE TABLE `member_pre_registration_custom_values` (
 	`field_id` int NOT NULL,
 	`value_text` varchar(191) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
-	CONSTRAINT `member_pre_registration_custom_values_pre_registration_id_field_id_pk` PRIMARY KEY(`pre_registration_id`,`field_id`)
+	CONSTRAINT `member_pre_registration_custom_values_pre_registr_21b6d6870321ab` PRIMARY KEY(`pre_registration_id`,`field_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_pre_registration_forms` (
@@ -1391,7 +1391,7 @@ CREATE TABLE `users` (
 );
 --> statement-breakpoint
 ALTER TABLE `administration_audit` ADD CONSTRAINT `administration_audit_actor_user_id_auth_users_id_fk` FOREIGN KEY (`actor_user_id`) REFERENCES `auth_users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `administration_audit` ADD CONSTRAINT `administration_audit_actor_membership_id_tenant_memberships_id_fk` FOREIGN KEY (`actor_membership_id`) REFERENCES `tenant_memberships`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `administration_audit` ADD CONSTRAINT `administration_audit_actor_membership_id_tenant_m_8c17683fc102e9` FOREIGN KEY (`actor_membership_id`) REFERENCES `tenant_memberships`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `administration_audit` ADD CONSTRAINT `administration_audit_tenant_id_tenants_id_fk` FOREIGN KEY (`tenant_id`) REFERENCES `tenants`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `administration_audit` ADD CONSTRAINT `administration_audit_convention_id_organizational_units_id_fk` FOREIGN KEY (`convention_id`) REFERENCES `organizational_units`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `administration_audit` ADD CONSTRAINT `administration_audit_unit_id_organizational_units_id_fk` FOREIGN KEY (`unit_id`) REFERENCES `organizational_units`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -1489,7 +1489,7 @@ ALTER TABLE `member_photos` ADD CONSTRAINT `member_photos_person_tenant_fk` FORE
 ALTER TABLE `member_pre_registration_custom_values` ADD CONSTRAINT `pre_registration_values_request_tenant_fk` FOREIGN KEY (`pre_registration_id`,`tenant_id`) REFERENCES `member_pre_registrations`(`id`,`tenant_id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `member_pre_registration_custom_values` ADD CONSTRAINT `pre_registration_values_field_tenant_fk` FOREIGN KEY (`field_id`,`tenant_id`) REFERENCES `member_custom_fields`(`id`,`tenant_id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `member_pre_registration_forms` ADD CONSTRAINT `member_pre_registration_forms_tenant_id_tenants_id_fk` FOREIGN KEY (`tenant_id`) REFERENCES `tenants`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `member_pre_registration_forms` ADD CONSTRAINT `member_pre_registration_forms_created_by_user_id_auth_users_id_fk` FOREIGN KEY (`created_by_user_id`) REFERENCES `auth_users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `member_pre_registration_forms` ADD CONSTRAINT `member_pre_registration_forms_created_by_user_id__e97524f26770dc` FOREIGN KEY (`created_by_user_id`) REFERENCES `auth_users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `member_pre_registration_forms` ADD CONSTRAINT `pre_registration_forms_unit_tenant_fk` FOREIGN KEY (`unit_id`,`tenant_id`) REFERENCES `organizational_units`(`id`,`tenant_id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `member_pre_registration_photos` ADD CONSTRAINT `pre_registration_photos_request_tenant_fk` FOREIGN KEY (`pre_registration_id`,`tenant_id`) REFERENCES `member_pre_registrations`(`id`,`tenant_id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `member_pre_registrations` ADD CONSTRAINT `member_pre_registrations_tenant_id_tenants_id_fk` FOREIGN KEY (`tenant_id`) REFERENCES `tenants`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -1532,9 +1532,9 @@ ALTER TABLE `saas_payments` ADD CONSTRAINT `saas_payments_tenant_id_tenants_id_f
 ALTER TABLE `saas_payments` ADD CONSTRAINT `saas_payments_subscription_id_tenant_subscriptions_id_fk` FOREIGN KEY (`subscription_id`) REFERENCES `tenant_subscriptions`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `saas_payments` ADD CONSTRAINT `saas_payments_charge_id_saas_charges_id_fk` FOREIGN KEY (`charge_id`) REFERENCES `saas_charges`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `saas_payments` ADD CONSTRAINT `saas_payments_created_by_auth_users_id_fk` FOREIGN KEY (`created_by`) REFERENCES `auth_users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `secretary_document_template_versions` ADD CONSTRAINT `secretary_document_template_versions_template_id_secretary_document_templates_id_fk` FOREIGN KEY (`template_id`) REFERENCES `secretary_document_templates`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `secretary_document_template_versions` ADD CONSTRAINT `secretary_document_template_versions_template_id__cb8f1bbd5c8697` FOREIGN KEY (`template_id`) REFERENCES `secretary_document_templates`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `secretary_documents` ADD CONSTRAINT `secretary_documents_person_id_people_id_fk` FOREIGN KEY (`person_id`) REFERENCES `people`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `secretary_documents` ADD CONSTRAINT `secretary_documents_template_id_secretary_document_templates_id_fk` FOREIGN KEY (`template_id`) REFERENCES `secretary_document_templates`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `secretary_documents` ADD CONSTRAINT `secretary_documents_template_id_secretary_documen_441d68d3f5f522` FOREIGN KEY (`template_id`) REFERENCES `secretary_document_templates`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `secretary_requests` ADD CONSTRAINT `secretary_requests_person_id_people_id_fk` FOREIGN KEY (`person_id`) REFERENCES `people`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `secretary_transfer_search_limits` ADD CONSTRAINT `secretary_transfer_search_limits_tenant_id_tenants_id_fk` FOREIGN KEY (`tenant_id`) REFERENCES `tenants`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `secretary_transfer_search_limits` ADD CONSTRAINT `secretary_transfer_search_limits_user_id_auth_users_id_fk` FOREIGN KEY (`user_id`) REFERENCES `auth_users`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
