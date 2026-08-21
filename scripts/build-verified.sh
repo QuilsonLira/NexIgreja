@@ -1,41 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "${project_root}"
 
-if [[ "${SITES_ENV_READY:-}" != "1" ]]; then
-  exec "${script_dir}/sites-env.sh" -- "$0" "$@"
-fi
-
-command -v timeout >/dev/null || {
-  echo "build-verified.sh requires GNU timeout." >&2
-  exit 69
-}
-
-vinext="${SITES_PROJECT_ROOT}/node_modules/.bin/vinext"
-if [[ ! -x "${vinext}" ]]; then
-  echo "vinext is unavailable. Run npm run install:ci and wait for it to finish before building." >&2
+next_bin="${project_root}/node_modules/.bin/next"
+if [[ ! -x "${next_bin}" ]]; then
+  echo "Next.js não está instalado em node_modules." >&2
   exit 69
 fi
 
-echo "Running bounded vinext build..."
-timeout \
-  --signal=TERM \
-  --kill-after="${SITES_BUILD_KILL_AFTER:-10s}" \
-  "${SITES_BUILD_TIMEOUT:-3m}" \
-  "${vinext}" build
+echo "Running native Next.js build for Hostinger (.next output)..."
+rm -rf "${project_root}/.next"
+"${next_bin}" build --webpack
 
-"${script_dir}/validate-artifact.sh"
-
-# Hostinger's "Other" Node.js deployment works best with a top-level
-# output directory and a conventional entry file. Vinext's real standalone
-# server remains in dist/standalone; this tiny entrypoint only starts it.
-[[ -f "${SITES_PROJECT_ROOT}/dist/standalone/server.js" ]] || {
-  echo "Missing Vinext standalone server: dist/standalone/server.js" >&2
+if [[ ! -d "${project_root}/.next" ]]; then
+  echo "ERROR: Next.js build finished without creating .next" >&2
   exit 66
-}
-cat > "${SITES_PROJECT_ROOT}/dist/server.js" <<'EOF'
-import "./standalone/server.js";
-EOF
+fi
 
-echo "Hostinger Node entry prepared: dist/server.js"
+if [[ ! -f "${project_root}/.next/BUILD_ID" ]]; then
+  echo "ERROR: .next exists but BUILD_ID was not generated" >&2
+  exit 66
+fi
+
+echo "Hostinger Next.js artifact ready: .next"
