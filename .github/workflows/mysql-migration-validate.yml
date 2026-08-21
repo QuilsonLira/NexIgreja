@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - mysql-migration
+      - mysql-real-backup
   pull_request:
     branches:
       - main
@@ -72,7 +73,7 @@ jobs:
       - name: Apply migrations to real MySQL 8
         run: npm run db:mysql:migrate
 
-      - name: Verify migration status and schema
+      - name: Verify migration status and complete schema
         run: |
           npm run db:mysql:status
           npm run db:mysql:ping
@@ -130,6 +131,7 @@ jobs:
             db/schema.mysql.ts
             drizzle-mysql/
             database/mysql/003_partial_unique_constraints.sql
+            database/mysql/004_runtime_tables_from_real_backup.sql
             database/mysql/generated-identifier-map.json
             mysql-migration-source.tgz
           if-no-files-found: warn
