@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "92d85c92-197c-40aa-8180-3bd4d01dfddb",
+  "id": "65f332ed-9593-4275-a345-414d9ef5ee60",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "administration_audit": {
@@ -9,35 +9,35 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "actor_membership_id": {
           "name": "actor_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "convention_id": {
           "name": "convention_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -58,14 +58,14 @@
         },
         "entity_id": {
           "name": "entity_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -190,21 +190,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -232,14 +232,14 @@
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "branch_id": {
           "name": "branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -284,21 +284,21 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "membership_id": {
           "name": "membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -321,7 +321,7 @@
         },
         "selected_unit_id": {
           "name": "selected_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -447,14 +447,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -526,7 +526,7 @@
         },
         "failed_attempts": {
           "name": "failed_attempts",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -548,7 +548,7 @@
         },
         "archived_by": {
           "name": "archived_by",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -632,21 +632,21 @@
       "columns": {
         "event_id": {
           "name": "event_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -674,7 +674,7 @@
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -750,21 +750,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -792,7 +792,7 @@
         },
         "responsible_person_id": {
           "name": "responsible_person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -813,14 +813,14 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -869,7 +869,7 @@
       "columns": {
         "singleton_id": {
           "name": "singleton_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -877,7 +877,7 @@
         },
         "warning_days": {
           "name": "warning_days",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -965,14 +965,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1025,28 +1025,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1060,7 +1060,7 @@
         },
         "request_id": {
           "name": "request_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1088,14 +1088,14 @@
         },
         "previous_unit_id": {
           "name": "previous_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "destination_unit_id": {
           "name": "destination_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1144,7 +1144,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1201,21 +1201,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1236,7 +1236,7 @@
         },
         "entity_id": {
           "name": "entity_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1315,7 +1315,7 @@
       "columns": {
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1423,42 +1423,42 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "previous_function_id": {
           "name": "previous_function_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "new_function_id": {
           "name": "new_function_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1479,7 +1479,7 @@
         },
         "responsible_person_id": {
           "name": "responsible_person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1500,21 +1500,21 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "completed_by_user_id": {
           "name": "completed_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1577,28 +1577,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "actor_membership_id": {
           "name": "actor_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1626,7 +1626,7 @@
         },
         "record_count": {
           "name": "record_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -1634,7 +1634,7 @@
         },
         "scope_unit_id": {
           "name": "scope_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1741,28 +1741,28 @@
       "columns": {
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "membership_id": {
           "name": "membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "role_id": {
           "name": "role_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1865,21 +1865,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -1914,14 +1914,14 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "finalized_by_user_id": {
           "name": "finalized_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1935,7 +1935,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2013,28 +2013,28 @@
       "columns": {
         "activity_id": {
           "name": "activity_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2055,7 +2055,7 @@
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2150,35 +2150,35 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "actor_membership_id": {
           "name": "actor_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2199,7 +2199,7 @@
         },
         "entity_id": {
           "name": "entity_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2301,21 +2301,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2343,14 +2343,14 @@
         },
         "recipient_count": {
           "name": "recipient_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2408,21 +2408,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2464,7 +2464,7 @@
         },
         "responsible_person_id": {
           "name": "responsible_person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2485,7 +2485,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2574,28 +2574,28 @@
       "columns": {
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "role_id": {
           "name": "role_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2719,21 +2719,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2755,7 +2755,7 @@
         },
         "display_order": {
           "name": "display_order",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -2825,14 +2825,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -2867,28 +2867,28 @@
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "convention_id": {
           "name": "convention_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "branch_id": {
           "name": "branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -2910,7 +2910,7 @@
         },
         "absence_alert_threshold": {
           "name": "absence_alert_threshold",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -2918,7 +2918,7 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -2926,7 +2926,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3072,28 +3072,28 @@
       "columns": {
         "meeting_id": {
           "name": "meeting_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3107,7 +3107,7 @@
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3204,77 +3204,77 @@
       "columns": {
         "meeting_id": {
           "name": "meeting_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "enrolled_count": {
           "name": "enrolled_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "present_count": {
           "name": "present_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "absent_count": {
           "name": "absent_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "justified_count": {
           "name": "justified_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "visitor_count": {
           "name": "visitor_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "bible_count": {
           "name": "bible_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "assistance_count": {
           "name": "assistance_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "offering_cents": {
           "name": "offering_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3295,14 +3295,14 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "finalized_by_user_id": {
           "name": "finalized_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -3391,28 +3391,28 @@
       "columns": {
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "membership_id": {
           "name": "membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -3515,21 +3515,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3634,77 +3634,77 @@
       "columns": {
         "meeting_id": {
           "name": "meeting_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "enrolled_total": {
           "name": "enrolled_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "present_total": {
           "name": "present_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "absent_total": {
           "name": "absent_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "justified_total": {
           "name": "justified_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "visitor_total": {
           "name": "visitor_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "bible_total": {
           "name": "bible_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "assistance_total": {
           "name": "assistance_total",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "offering_total_cents": {
           "name": "offering_total_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3718,7 +3718,7 @@
         },
         "finalized_by_user_id": {
           "name": "finalized_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3796,35 +3796,35 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3941,21 +3941,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -3990,21 +3990,21 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "finalized_by_user_id": {
           "name": "finalized_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -4099,28 +4099,28 @@
       "columns": {
         "meeting_id": {
           "name": "meeting_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "student_id": {
           "name": "student_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4134,7 +4134,7 @@
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4218,35 +4218,35 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "student_id": {
           "name": "student_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4363,28 +4363,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -4461,7 +4461,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4537,42 +4537,42 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "department_id": {
           "name": "department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "meeting_id": {
           "name": "meeting_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "class_id": {
           "name": "class_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -4614,7 +4614,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4711,28 +4711,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -4748,14 +4748,14 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4811,21 +4811,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "config_id": {
           "name": "config_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4861,14 +4861,14 @@
         },
         "percentage_basis_points": {
           "name": "percentage_basis_points",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "fixed_amount_cents": {
           "name": "fixed_amount_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -4883,14 +4883,14 @@
         },
         "destination_unit_id": {
           "name": "destination_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "destination_department_id": {
           "name": "destination_department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -4905,14 +4905,14 @@
         },
         "display_order": {
           "name": "display_order",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "active": {
           "name": "active",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -4962,7 +4962,7 @@
       "columns": {
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -4976,21 +4976,21 @@
         },
         "category_id": {
           "name": "category_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5038,21 +5038,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "repass_id": {
           "name": "repass_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5066,21 +5066,21 @@
         },
         "amount_cents": {
           "name": "amount_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "account_id": {
           "name": "account_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "movement_id": {
           "name": "movement_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5101,7 +5101,7 @@
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5150,63 +5150,63 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "period_id": {
           "name": "period_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "closure_version": {
           "name": "closure_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "rule_display_order": {
           "name": "rule_display_order",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "source_rule_id": {
           "name": "source_rule_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "source_unit_id": {
           "name": "source_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "destination_unit_id": {
           "name": "destination_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "destination_department_id": {
           "name": "destination_department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5221,14 +5221,14 @@
         },
         "payer_unit_id": {
           "name": "payer_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "receiver_unit_id": {
           "name": "receiver_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5249,14 +5249,14 @@
         },
         "expected_cents": {
           "name": "expected_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "sent_cents": {
           "name": "sent_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5264,7 +5264,7 @@
         },
         "received_cents": {
           "name": "received_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5272,7 +5272,7 @@
         },
         "written_off_cents": {
           "name": "written_off_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5288,14 +5288,14 @@
         },
         "superseded_by_id": {
           "name": "superseded_by_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5358,28 +5358,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "period_id": {
           "name": "period_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "source_rule_id": {
           "name": "source_rule_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5414,14 +5414,14 @@
         },
         "percentage_basis_points": {
           "name": "percentage_basis_points",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "fixed_amount_cents": {
           "name": "fixed_amount_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5436,14 +5436,14 @@
         },
         "destination_unit_id": {
           "name": "destination_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "destination_department_id": {
           "name": "destination_department_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5465,14 +5465,14 @@
         },
         "display_order": {
           "name": "display_order",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "snapshot_version": {
           "name": "snapshot_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5503,63 +5503,63 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "period_id": {
           "name": "period_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "branch_id": {
           "name": "branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "requester_user_id": {
           "name": "requester_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "requester_membership_id": {
           "name": "requester_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "requested_closure_version": {
           "name": "requested_closure_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5595,14 +5595,14 @@
         },
         "decided_by_user_id": {
           "name": "decided_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "decided_by_membership_id": {
           "name": "decided_by_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5630,7 +5630,7 @@
         },
         "reopened_by_user_id": {
           "name": "reopened_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5689,21 +5689,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5717,14 +5717,14 @@
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "branch_id": {
           "name": "branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5754,14 +5754,14 @@
         },
         "allocation_config_id": {
           "name": "allocation_config_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "allocation_config_version": {
           "name": "allocation_config_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5775,7 +5775,7 @@
         },
         "opened_by_user_id": {
           "name": "opened_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5789,7 +5789,7 @@
         },
         "closed_by_user_id": {
           "name": "closed_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5803,7 +5803,7 @@
         },
         "reopened_by_user_id": {
           "name": "reopened_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5817,7 +5817,7 @@
         },
         "reopen_count": {
           "name": "reopen_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5825,7 +5825,7 @@
         },
         "closure_version": {
           "name": "closure_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5840,7 +5840,7 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5900,42 +5900,42 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "period_id": {
           "name": "period_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "account_id": {
           "name": "account_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -5963,7 +5963,7 @@
         },
         "default_payment_method_id": {
           "name": "default_payment_method_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -5978,7 +5978,7 @@
         },
         "entry_count": {
           "name": "entry_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -5986,7 +5986,7 @@
         },
         "total_cents": {
           "name": "total_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -6044,14 +6044,14 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "article_id": {
           "name": "article_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6110,14 +6110,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -6159,7 +6159,7 @@
         },
         "display_order": {
           "name": "display_order",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -6220,7 +6220,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -6303,7 +6303,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
@@ -6355,21 +6355,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -6476,14 +6476,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "convention_id": {
           "name": "convention_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6522,14 +6522,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6580,7 +6580,7 @@
         },
         "display_order": {
           "name": "display_order",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -6627,7 +6627,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6718,21 +6718,21 @@
       "columns": {
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "field_id": {
           "name": "field_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6746,7 +6746,7 @@
         },
         "updated_by_user_id": {
           "name": "updated_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6829,14 +6829,14 @@
       "columns": {
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6857,7 +6857,7 @@
         },
         "byte_size": {
           "name": "byte_size",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -6917,21 +6917,21 @@
       "columns": {
         "pre_registration_id": {
           "name": "pre_registration_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "field_id": {
           "name": "field_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7001,14 +7001,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7036,7 +7036,7 @@
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -7058,7 +7058,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7163,14 +7163,14 @@
       "columns": {
         "pre_registration_id": {
           "name": "pre_registration_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7191,7 +7191,7 @@
         },
         "byte_size": {
           "name": "byte_size",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7245,7 +7245,7 @@
         },
         "attempts": {
           "name": "attempts",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -7284,21 +7284,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "form_id": {
           "name": "form_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7354,14 +7354,14 @@
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "branch_id": {
           "name": "branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -7411,7 +7411,7 @@
         },
         "reviewed_by_user_id": {
           "name": "reviewed_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -7425,7 +7425,7 @@
         },
         "approved_member_id": {
           "name": "approved_member_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -7592,14 +7592,14 @@
       "columns": {
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "last_number": {
           "name": "last_number",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -7645,7 +7645,7 @@
       "columns": {
         "membership_id": {
           "name": "membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7698,14 +7698,14 @@
       "columns": {
         "notification_id": {
           "name": "notification_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -7796,14 +7796,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -7861,14 +7861,14 @@
         },
         "source_entity_id": {
           "name": "source_entity_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -7973,14 +7973,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -8078,14 +8078,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -8233,7 +8233,7 @@
         },
         "parent_id": {
           "name": "parent_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -8255,7 +8255,7 @@
         },
         "archived_by": {
           "name": "archived_by",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -8352,21 +8352,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "member_number": {
           "name": "member_number",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -8486,14 +8486,14 @@
         },
         "spouse_person_id": {
           "name": "spouse_person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "children_count": {
           "name": "children_count",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -8578,21 +8578,21 @@
         },
         "primary_function_id": {
           "name": "primary_function_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "matrix_id": {
           "name": "matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "branch_id": {
           "name": "branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -8641,14 +8641,14 @@
         },
         "linked_auth_user_id": {
           "name": "linked_auth_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -8821,21 +8821,21 @@
       "columns": {
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "function_id": {
           "name": "function_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -8920,21 +8920,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -8976,14 +8976,14 @@
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "actor_membership_id": {
           "name": "actor_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -9069,28 +9069,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "related_person_id": {
           "name": "related_person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9182,21 +9182,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
         },
         "actor_user_id": {
           "name": "actor_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -9217,21 +9217,21 @@
         },
         "entity_id": {
           "name": "entity_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "convention_id": {
           "name": "convention_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -9317,7 +9317,7 @@
       "columns": {
         "singleton_id": {
           "name": "singleton_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -9325,7 +9325,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9390,21 +9390,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "subscription_id": {
           "name": "subscription_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9425,7 +9425,7 @@
         },
         "amount_cents": {
           "name": "amount_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9564,35 +9564,35 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "subscription_id": {
           "name": "subscription_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "charge_id": {
           "name": "charge_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "amount_cents": {
           "name": "amount_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9642,7 +9642,7 @@
         },
         "created_by": {
           "name": "created_by",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9739,7 +9739,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9760,7 +9760,7 @@
         },
         "price_cents": {
           "name": "price_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9774,7 +9774,7 @@
         },
         "default_grace_days": {
           "name": "default_grace_days",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -9782,7 +9782,7 @@
         },
         "default_trial_days": {
           "name": "default_trial_days",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -9837,21 +9837,21 @@
       "columns": {
         "template_id": {
           "name": "template_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9900,7 +9900,7 @@
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -9946,21 +9946,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -9988,14 +9988,14 @@
         },
         "current_version": {
           "name": "current_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "created_by_user_id": {
           "name": "created_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10033,42 +10033,42 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "template_id": {
           "name": "template_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "template_version": {
           "name": "template_version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10124,7 +10124,7 @@
         },
         "issued_by_user_id": {
           "name": "issued_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10193,21 +10193,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "person_id": {
           "name": "person_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10229,14 +10229,14 @@
         },
         "origin_unit_id": {
           "name": "origin_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "destination_unit_id": {
           "name": "destination_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10299,21 +10299,21 @@
         },
         "version": {
           "name": "version",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "requested_by_user_id": {
           "name": "requested_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "reviewed_by_user_id": {
           "name": "reviewed_by_user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10400,21 +10400,21 @@
       "columns": {
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "attempts": {
           "name": "attempts",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -10504,21 +10504,21 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "active_matrix_id": {
           "name": "active_matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "active_branch_id": {
           "name": "active_branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10612,7 +10612,7 @@
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10671,21 +10671,21 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10706,7 +10706,7 @@
         },
         "function_id": {
           "name": "function_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10720,7 +10720,7 @@
         },
         "scope_unit_id": {
           "name": "scope_unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -10735,7 +10735,7 @@
         },
         "invited_by_membership_id": {
           "name": "invited_by_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10756,7 +10756,7 @@
         },
         "archived_by_membership_id": {
           "name": "archived_by_membership_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10863,28 +10863,28 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "tenant_id": {
           "name": "tenant_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "plan_id": {
           "name": "plan_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "contracted_price_cents": {
           "name": "contracted_price_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -10892,7 +10892,7 @@
         },
         "custom_price_cents": {
           "name": "custom_price_cents",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -10927,14 +10927,14 @@
         },
         "due_day": {
           "name": "due_day",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "grace_days": {
           "name": "grace_days",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -11079,7 +11079,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11159,7 +11159,7 @@
       "columns": {
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11180,7 +11180,7 @@
         },
         "byte_size": {
           "name": "byte_size",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11225,7 +11225,7 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11278,7 +11278,7 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11299,7 +11299,7 @@
         },
         "byte_size": {
           "name": "byte_size",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11344,14 +11344,14 @@
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "unit_id": {
           "name": "unit_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11418,14 +11418,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "convention_id": {
           "name": "convention_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -11488,14 +11488,14 @@
         },
         "bound_matrix_id": {
           "name": "bound_matrix_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "bound_branch_id": {
           "name": "bound_branch_id",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -11518,7 +11518,7 @@
         },
         "failed_attempts": {
           "name": "failed_attempts",
-          "type": "int",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,

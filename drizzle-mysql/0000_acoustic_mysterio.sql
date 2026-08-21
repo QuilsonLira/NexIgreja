@@ -1,13 +1,13 @@
 CREATE TABLE `administration_audit` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`actor_user_id` int NOT NULL,
-	`actor_membership_id` int,
-	`tenant_id` int NOT NULL,
-	`convention_id` int NOT NULL,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`actor_user_id` bigint NOT NULL,
+	`actor_membership_id` bigint,
+	`tenant_id` bigint NOT NULL,
+	`convention_id` bigint NOT NULL,
 	`action` varchar(191) NOT NULL,
 	`entity_type` varchar(80) NOT NULL,
-	`entity_id` int NOT NULL,
-	`unit_id` int,
+	`entity_id` bigint NOT NULL,
+	`unit_id` bigint,
 	`ip_address` varchar(191),
 	`user_agent` text,
 	`device_summary` varchar(191),
@@ -17,14 +17,14 @@ CREATE TABLE `administration_audit` (
 );
 --> statement-breakpoint
 CREATE TABLE `audit_logs` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`user_id` int,
-	`tenant_id` int,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`user_id` bigint,
+	`tenant_id` bigint,
 	`event` varchar(191) NOT NULL,
 	`identifier_type` varchar(80),
 	`reason` varchar(191) NOT NULL,
-	`matrix_id` int,
-	`branch_id` int,
+	`matrix_id` bigint,
+	`branch_id` bigint,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `audit_logs_id` PRIMARY KEY(`id`)
 );
@@ -32,12 +32,12 @@ CREATE TABLE `audit_logs` (
 CREATE TABLE `auth_sessions` (
 	`id` varchar(191) NOT NULL,
 	`token_hash` varchar(191) NOT NULL,
-	`user_id` int NOT NULL,
-	`tenant_id` int,
-	`membership_id` int,
+	`user_id` bigint NOT NULL,
+	`tenant_id` bigint,
+	`membership_id` bigint,
 	`organization_selection_required` boolean NOT NULL DEFAULT false,
 	`platform_context_active` boolean NOT NULL DEFAULT false,
-	`selected_unit_id` int,
+	`selected_unit_id` bigint,
 	`previous_login_at` varchar(40),
 	`previous_identifier_type` varchar(80),
 	`previous_device_summary` varchar(191),
@@ -49,8 +49,8 @@ CREATE TABLE `auth_sessions` (
 );
 --> statement-breakpoint
 CREATE TABLE `auth_users` (
-	`id` int NOT NULL,
-	`tenant_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint,
 	`name` varchar(255) NOT NULL,
 	`username` varchar(100) NOT NULL,
 	`email` varchar(254) NOT NULL,
@@ -60,10 +60,10 @@ CREATE TABLE `auth_users` (
 	`scope` varchar(80) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	`must_change_password` boolean NOT NULL DEFAULT false,
-	`failed_attempts` int NOT NULL DEFAULT 0,
+	`failed_attempts` bigint NOT NULL DEFAULT 0,
 	`blocked_until` varchar(40),
 	`archived_at` varchar(40),
-	`archived_by` int,
+	`archived_by` bigint,
 	`archived_previous_status` varchar(80),
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -74,38 +74,38 @@ CREATE TABLE `auth_users` (
 );
 --> statement-breakpoint
 CREATE TABLE `baptism_candidates` (
-	`event_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
+	`event_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`notes` text,
 	`completed_at` varchar(40),
-	`updated_by_user_id` int NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `baptism_candidates_event_id_person_id_pk` PRIMARY KEY(`event_id`,`person_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `baptism_events` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`unit_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
 	`title` varchar(255) NOT NULL,
 	`scheduled_date` varchar(40) NOT NULL,
 	`location` varchar(191),
-	`responsible_person_id` int,
+	`responsible_person_id` bigint,
 	`notes` text,
 	`status` varchar(80) NOT NULL,
-	`version` int NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`version` bigint NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `baptism_events_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `billing_settings` (
-	`singleton_id` int NOT NULL DEFAULT 1,
-	`warning_days` int NOT NULL DEFAULT 7,
+	`singleton_id` bigint NOT NULL DEFAULT 1,
+	`warning_days` bigint NOT NULL DEFAULT 7,
 	`pix_key` varchar(191),
 	`pix_key_type` varchar(80),
 	`payee_name` varchar(255),
@@ -119,43 +119,43 @@ CREATE TABLE `billing_settings` (
 );
 --> statement-breakpoint
 CREATE TABLE `branches` (
-	`id` int NOT NULL,
-	`matrix_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`matrix_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	CONSTRAINT `branches_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `church_movements` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
-	`unit_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
 	`movement_type` varchar(80) NOT NULL,
-	`request_id` int,
+	`request_id` bigint,
 	`effective_date` varchar(40) NOT NULL,
 	`previous_status` varchar(80),
 	`new_status` varchar(80),
-	`previous_unit_id` int,
-	`destination_unit_id` int,
+	`previous_unit_id` bigint,
+	`destination_unit_id` bigint,
 	`external_church` varchar(191),
 	`external_city` varchar(191),
 	`external_state` varchar(191),
 	`description` text NOT NULL,
 	`metadata_json` text NOT NULL,
 	`status` varchar(80) NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `church_movements_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `commercial_audit` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`actor_user_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`actor_user_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`action` varchar(191) NOT NULL,
 	`entity_type` varchar(80) NOT NULL,
-	`entity_id` int NOT NULL,
+	`entity_id` bigint NOT NULL,
 	`previous_values` text,
 	`new_values` text,
 	`reason` varchar(191),
@@ -164,7 +164,7 @@ CREATE TABLE `commercial_audit` (
 );
 --> statement-breakpoint
 CREATE TABLE `commercial_profiles` (
-	`tenant_id` int NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`person_type` varchar(80) NOT NULL,
 	`legal_name` varchar(255) NOT NULL,
 	`document` varchar(191),
@@ -179,35 +179,35 @@ CREATE TABLE `commercial_profiles` (
 );
 --> statement-breakpoint
 CREATE TABLE `consecrations` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
-	`unit_id` int NOT NULL,
-	`previous_function_id` int,
-	`new_function_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
+	`previous_function_id` bigint,
+	`new_function_id` bigint NOT NULL,
 	`event_date` varchar(40) NOT NULL,
 	`location` varchar(191),
-	`responsible_person_id` int,
+	`responsible_person_id` bigint,
 	`notes` text,
 	`status` varchar(80) NOT NULL,
-	`version` int NOT NULL,
-	`created_by_user_id` int NOT NULL,
-	`completed_by_user_id` int,
+	`version` bigint NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
+	`completed_by_user_id` bigint,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `consecrations_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `data_export_audit` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`actor_user_id` int NOT NULL,
-	`actor_membership_id` int,
-	`tenant_id` int NOT NULL,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`actor_user_id` bigint NOT NULL,
+	`actor_membership_id` bigint,
+	`tenant_id` bigint NOT NULL,
 	`export_type` varchar(80) NOT NULL,
 	`modules` text NOT NULL,
 	`format` varchar(191) NOT NULL,
-	`record_count` int NOT NULL DEFAULT 0,
-	`scope_unit_id` int,
+	`record_count` bigint NOT NULL DEFAULT 0,
+	`scope_unit_id` bigint,
 	`status` varchar(80) NOT NULL,
 	`details` text,
 	`created_at` varchar(40) NOT NULL,
@@ -215,10 +215,10 @@ CREATE TABLE `data_export_audit` (
 );
 --> statement-breakpoint
 CREATE TABLE `department_access` (
-	`department_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`membership_id` int NOT NULL,
-	`role_id` int,
+	`department_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`membership_id` bigint NOT NULL,
+	`role_id` bigint,
 	`permissions_json` text NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
@@ -227,43 +227,43 @@ CREATE TABLE `department_access` (
 );
 --> statement-breakpoint
 CREATE TABLE `department_activities` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
 	`activity_date` varchar(40) NOT NULL,
 	`title` varchar(255) NOT NULL,
 	`notes` text,
 	`status` varchar(80) NOT NULL,
-	`version` int NOT NULL,
-	`finalized_by_user_id` int,
+	`version` bigint NOT NULL,
+	`finalized_by_user_id` bigint,
 	`finalized_at` varchar(40),
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `department_activities_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `department_attendance` (
-	`activity_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`person_id` int NOT NULL,
+	`activity_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
 	`attendance_status` varchar(80) NOT NULL,
 	`notes` text,
-	`updated_by_user_id` int NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `department_attendance_activity_id_person_id_pk` PRIMARY KEY(`activity_id`,`person_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `department_audit` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`actor_user_id` int NOT NULL,
-	`actor_membership_id` int,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`actor_user_id` bigint NOT NULL,
+	`actor_membership_id` bigint,
 	`action` varchar(191) NOT NULL,
 	`entity_type` varchar(80) NOT NULL,
-	`entity_id` int NOT NULL,
+	`entity_id` bigint NOT NULL,
 	`previous_values` text,
 	`new_values` text,
 	`reason` varchar(191),
@@ -272,41 +272,41 @@ CREATE TABLE `department_audit` (
 );
 --> statement-breakpoint
 CREATE TABLE `department_communications` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
 	`message` text NOT NULL,
 	`audience` varchar(191) NOT NULL,
 	`channel` varchar(191) NOT NULL,
-	`recipient_count` int NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`recipient_count` bigint NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `department_communications_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `department_events` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
 	`title` varchar(255) NOT NULL,
 	`description` text,
 	`event_date` varchar(40) NOT NULL,
 	`start_time` varchar(40),
 	`location` varchar(191),
-	`responsible_person_id` int,
+	`responsible_person_id` bigint,
 	`notes` text,
 	`status` varchar(80) NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `department_events_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `department_participants` (
-	`department_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
-	`role_id` int,
+	`department_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
+	`role_id` bigint,
 	`joined_at` varchar(40) NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`left_at` varchar(40),
@@ -318,12 +318,12 @@ CREATE TABLE `department_participants` (
 );
 --> statement-breakpoint
 CREATE TABLE `department_roles` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`is_leadership` boolean NOT NULL DEFAULT false,
-	`display_order` int NOT NULL DEFAULT 0,
+	`display_order` bigint NOT NULL DEFAULT 0,
 	`status` varchar(80) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -332,21 +332,21 @@ CREATE TABLE `department_roles` (
 );
 --> statement-breakpoint
 CREATE TABLE `departments` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`acronym` varchar(191),
 	`description` text,
 	`type` varchar(80) NOT NULL,
-	`unit_id` int NOT NULL,
-	`convention_id` int NOT NULL,
-	`matrix_id` int,
-	`branch_id` int,
+	`unit_id` bigint NOT NULL,
+	`convention_id` bigint NOT NULL,
+	`matrix_id` bigint,
+	`branch_id` bigint,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	`enabled_features` text NOT NULL,
-	`absence_alert_threshold` int NOT NULL DEFAULT 3,
-	`version` int NOT NULL DEFAULT 1,
-	`created_by_user_id` int NOT NULL,
+	`absence_alert_threshold` bigint NOT NULL DEFAULT 3,
+	`version` bigint NOT NULL DEFAULT 1,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `departments_id` PRIMARY KEY(`id`),
@@ -355,42 +355,42 @@ CREATE TABLE `departments` (
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_attendance` (
-	`meeting_id` int NOT NULL,
-	`class_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
+	`meeting_id` bigint NOT NULL,
+	`class_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
 	`attendance_status` varchar(80) NOT NULL,
-	`updated_by_user_id` int NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `ebd_attendance_meeting_id_class_id_person_id_pk` PRIMARY KEY(`meeting_id`,`class_id`,`person_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_class_summaries` (
-	`meeting_id` int NOT NULL,
-	`class_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`enrolled_count` int NOT NULL,
-	`present_count` int NOT NULL,
-	`absent_count` int NOT NULL,
-	`justified_count` int NOT NULL,
-	`visitor_count` int NOT NULL,
-	`bible_count` int NOT NULL,
-	`assistance_count` int NOT NULL,
-	`offering_cents` int NOT NULL,
+	`meeting_id` bigint NOT NULL,
+	`class_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`enrolled_count` bigint NOT NULL,
+	`present_count` bigint NOT NULL,
+	`absent_count` bigint NOT NULL,
+	`justified_count` bigint NOT NULL,
+	`visitor_count` bigint NOT NULL,
+	`bible_count` bigint NOT NULL,
+	`assistance_count` bigint NOT NULL,
+	`offering_cents` bigint NOT NULL,
 	`notes` text,
 	`status` varchar(80) NOT NULL,
-	`version` int NOT NULL,
-	`finalized_by_user_id` int,
+	`version` bigint NOT NULL,
+	`finalized_by_user_id` bigint,
 	`finalized_at` varchar(40),
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `ebd_class_summaries_meeting_id_class_id_pk` PRIMARY KEY(`meeting_id`,`class_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_class_teachers` (
-	`class_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`membership_id` int NOT NULL,
-	`person_id` int,
+	`class_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`membership_id` bigint NOT NULL,
+	`person_id` bigint,
 	`teacher_role` varchar(191) NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
@@ -399,9 +399,9 @@ CREATE TABLE `ebd_class_teachers` (
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_classes` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`description` text,
 	`age_range` varchar(191),
@@ -415,30 +415,30 @@ CREATE TABLE `ebd_classes` (
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_closures` (
-	`meeting_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`enrolled_total` int NOT NULL,
-	`present_total` int NOT NULL,
-	`absent_total` int NOT NULL,
-	`justified_total` int NOT NULL,
-	`visitor_total` int NOT NULL,
-	`bible_total` int NOT NULL,
-	`assistance_total` int NOT NULL,
-	`offering_total_cents` int NOT NULL,
+	`meeting_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`enrolled_total` bigint NOT NULL,
+	`present_total` bigint NOT NULL,
+	`absent_total` bigint NOT NULL,
+	`justified_total` bigint NOT NULL,
+	`visitor_total` bigint NOT NULL,
+	`bible_total` bigint NOT NULL,
+	`assistance_total` bigint NOT NULL,
+	`offering_total_cents` bigint NOT NULL,
 	`exception_reason` varchar(191),
-	`finalized_by_user_id` int NOT NULL,
+	`finalized_by_user_id` bigint NOT NULL,
 	`finalized_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `ebd_closures_meeting_id` PRIMARY KEY(`meeting_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_enrollments` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`class_id` int NOT NULL,
-	`person_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`class_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
 	`enrolled_at` varchar(40) NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`left_at` varchar(40),
@@ -449,16 +449,16 @@ CREATE TABLE `ebd_enrollments` (
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_meetings` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
 	`meeting_date` varchar(40) NOT NULL,
 	`theme` varchar(191),
 	`start_time` varchar(40),
 	`status` varchar(80) NOT NULL,
-	`version` int NOT NULL,
-	`created_by_user_id` int NOT NULL,
-	`finalized_by_user_id` int,
+	`version` bigint NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
+	`finalized_by_user_id` bigint,
 	`finalized_at` varchar(40),
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -467,22 +467,22 @@ CREATE TABLE `ebd_meetings` (
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_student_attendance` (
-	`meeting_id` int NOT NULL,
-	`class_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`student_id` int NOT NULL,
+	`meeting_id` bigint NOT NULL,
+	`class_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`student_id` bigint NOT NULL,
 	`attendance_status` varchar(80) NOT NULL,
-	`updated_by_user_id` int NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `ebd_student_attendance_meeting_id_class_id_student_id_pk` PRIMARY KEY(`meeting_id`,`class_id`,`student_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_student_enrollments` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`class_id` int NOT NULL,
-	`student_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`class_id` bigint NOT NULL,
+	`student_id` bigint NOT NULL,
 	`enrolled_at` varchar(40) NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`left_at` varchar(40),
@@ -493,10 +493,10 @@ CREATE TABLE `ebd_student_enrollments` (
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_students` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`person_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`person_id` bigint,
 	`full_name` varchar(255) NOT NULL,
 	`birth_date` varchar(40),
 	`sex` varchar(191),
@@ -507,37 +507,37 @@ CREATE TABLE `ebd_students` (
 	`guardian_phone` varchar(40),
 	`notes` text,
 	`status` varchar(80) NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `ebd_students_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `ebd_visitors` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`department_id` int NOT NULL,
-	`meeting_id` int NOT NULL,
-	`class_id` int NOT NULL,
-	`person_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`department_id` bigint NOT NULL,
+	`meeting_id` bigint NOT NULL,
+	`class_id` bigint NOT NULL,
+	`person_id` bigint,
 	`name` varchar(255) NOT NULL,
 	`phone` varchar(40),
 	`age_range` varchar(191),
 	`invited_by` varchar(191),
 	`notes` text,
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `ebd_visitors_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_allocation_configs` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`unit_id` int NOT NULL,
-	`version` int NOT NULL DEFAULT 1,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
+	`version` bigint NOT NULL DEFAULT 1,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVA',
-	`created_by_user_id` int NOT NULL,
-	`updated_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_allocation_configs_id` PRIMARY KEY(`id`),
@@ -545,75 +545,75 @@ CREATE TABLE `finance_allocation_configs` (
 );
 --> statement-breakpoint
 CREATE TABLE `finance_allocation_rules` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`config_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`config_id` bigint NOT NULL,
 	`recipient_name` varchar(255) NOT NULL,
 	`description` text,
 	`recipient_type` varchar(80) NOT NULL,
 	`rule_type` varchar(80) NOT NULL DEFAULT 'PERCENTUAL',
-	`percentage_basis_points` int,
-	`fixed_amount_cents` int,
+	`percentage_basis_points` bigint,
+	`fixed_amount_cents` bigint,
 	`financial_destination` varchar(191) NOT NULL DEFAULT 'REPASSAR',
-	`destination_unit_id` int,
-	`destination_department_id` int,
+	`destination_unit_id` bigint,
+	`destination_department_id` bigint,
 	`calculation_base` varchar(191) NOT NULL DEFAULT 'RECEITAS_PARTICIPANTES',
-	`display_order` int NOT NULL,
-	`active` int NOT NULL DEFAULT 1,
+	`display_order` bigint NOT NULL,
+	`active` bigint NOT NULL DEFAULT 1,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_allocation_rules_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_contribution_category_defaults` (
-	`tenant_id` int NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`contribution_type` varchar(80) NOT NULL,
-	`category_id` int NOT NULL,
-	`created_by_user_id` int NOT NULL,
-	`updated_by_user_id` int NOT NULL,
+	`category_id` bigint NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_contribution_category_defaults_tenant_id__7797fab2d67b61` PRIMARY KEY(`tenant_id`,`contribution_type`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_interunit_repass_events` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`repass_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`repass_id` bigint NOT NULL,
 	`event_type` varchar(80) NOT NULL,
-	`amount_cents` int NOT NULL,
-	`account_id` int,
-	`movement_id` int,
+	`amount_cents` bigint NOT NULL,
+	`account_id` bigint,
+	`movement_id` bigint,
 	`occurred_on` varchar(40) NOT NULL,
 	`reason` varchar(191),
-	`actor_user_id` int NOT NULL,
+	`actor_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_interunit_repass_events_id` PRIMARY KEY(`id`),
 	CONSTRAINT `finance_interunit_repass_events_movement_unique` UNIQUE(`tenant_id`,`movement_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_interunit_repasses` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`period_id` int NOT NULL,
-	`closure_version` int NOT NULL,
-	`rule_display_order` int NOT NULL,
-	`source_rule_id` int,
-	`source_unit_id` int NOT NULL,
-	`destination_unit_id` int NOT NULL,
-	`destination_department_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`period_id` bigint NOT NULL,
+	`closure_version` bigint NOT NULL,
+	`rule_display_order` bigint NOT NULL,
+	`source_rule_id` bigint,
+	`source_unit_id` bigint NOT NULL,
+	`destination_unit_id` bigint NOT NULL,
+	`destination_department_id` bigint,
 	`kind` varchar(80) NOT NULL DEFAULT 'NORMAL',
-	`payer_unit_id` int NOT NULL,
-	`receiver_unit_id` int NOT NULL,
+	`payer_unit_id` bigint NOT NULL,
+	`receiver_unit_id` bigint NOT NULL,
 	`recipient_name` varchar(255) NOT NULL,
 	`competency` varchar(16) NOT NULL,
-	`expected_cents` int NOT NULL,
-	`sent_cents` int NOT NULL DEFAULT 0,
-	`received_cents` int NOT NULL DEFAULT 0,
-	`written_off_cents` int NOT NULL DEFAULT 0,
+	`expected_cents` bigint NOT NULL,
+	`sent_cents` bigint NOT NULL DEFAULT 0,
+	`received_cents` bigint NOT NULL DEFAULT 0,
+	`written_off_cents` bigint NOT NULL DEFAULT 0,
 	`status` varchar(80) NOT NULL DEFAULT 'PENDENTE',
-	`superseded_by_id` int,
-	`created_by_user_id` int NOT NULL,
+	`superseded_by_id` bigint,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_interunit_repasses_id` PRIMARY KEY(`id`),
@@ -621,75 +621,75 @@ CREATE TABLE `finance_interunit_repasses` (
 );
 --> statement-breakpoint
 CREATE TABLE `finance_period_allocation_rules` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`period_id` int NOT NULL,
-	`source_rule_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`period_id` bigint NOT NULL,
+	`source_rule_id` bigint NOT NULL,
 	`recipient_name` varchar(255) NOT NULL,
 	`description` text,
 	`recipient_type` varchar(80) NOT NULL,
 	`rule_type` varchar(80) NOT NULL,
-	`percentage_basis_points` int,
-	`fixed_amount_cents` int,
+	`percentage_basis_points` bigint,
+	`fixed_amount_cents` bigint,
 	`financial_destination` varchar(191) NOT NULL DEFAULT 'REPASSAR',
-	`destination_unit_id` int,
-	`destination_department_id` int,
+	`destination_unit_id` bigint,
+	`destination_department_id` bigint,
 	`calculation_base` varchar(191) NOT NULL,
 	`participating_category_ids_json` text NOT NULL DEFAULT ('[]'),
-	`display_order` int NOT NULL,
-	`snapshot_version` int NOT NULL,
+	`display_order` bigint NOT NULL,
+	`snapshot_version` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_period_allocation_rules_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_period_reopen_requests` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`period_id` int NOT NULL,
-	`unit_id` int NOT NULL,
-	`matrix_id` int NOT NULL,
-	`branch_id` int,
-	`requester_user_id` int NOT NULL,
-	`requester_membership_id` int NOT NULL,
-	`requested_closure_version` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`period_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
+	`matrix_id` bigint NOT NULL,
+	`branch_id` bigint,
+	`requester_user_id` bigint NOT NULL,
+	`requester_membership_id` bigint NOT NULL,
+	`requested_closure_version` bigint NOT NULL,
 	`reason` varchar(191) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'PENDENTE',
 	`requested_at` varchar(40) NOT NULL,
 	`expires_at` varchar(40),
-	`decided_by_user_id` int,
-	`decided_by_membership_id` int,
+	`decided_by_user_id` bigint,
+	`decided_by_membership_id` bigint,
 	`decision_reason` varchar(191),
 	`decided_at` varchar(40),
 	`used_at` varchar(40),
-	`reopened_by_user_id` int,
+	`reopened_by_user_id` bigint,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_period_reopen_requests_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `finance_periods` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`unit_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
 	`unit_type` varchar(80) NOT NULL,
-	`matrix_id` int NOT NULL,
-	`branch_id` int,
+	`matrix_id` bigint NOT NULL,
+	`branch_id` bigint,
 	`competency` varchar(16) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'ABERTO',
 	`lifecycle_state` varchar(191) NOT NULL DEFAULT 'ABERTO',
-	`allocation_config_id` int NOT NULL,
-	`allocation_config_version` int NOT NULL,
+	`allocation_config_id` bigint NOT NULL,
+	`allocation_config_version` bigint NOT NULL,
 	`opened_at` varchar(40) NOT NULL,
-	`opened_by_user_id` int NOT NULL,
+	`opened_by_user_id` bigint NOT NULL,
 	`closed_at` varchar(40),
-	`closed_by_user_id` int,
+	`closed_by_user_id` bigint,
 	`reopened_at` varchar(40),
-	`reopened_by_user_id` int,
+	`reopened_by_user_id` bigint,
 	`reopen_reason` varchar(191),
-	`reopen_count` int NOT NULL DEFAULT 0,
-	`closure_version` int NOT NULL DEFAULT 0,
+	`reopen_count` bigint NOT NULL DEFAULT 0,
+	`closure_version` bigint NOT NULL DEFAULT 0,
 	`notes` text,
-	`version` int NOT NULL DEFAULT 1,
+	`version` bigint NOT NULL DEFAULT 1,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `finance_periods_id` PRIMARY KEY(`id`),
@@ -697,19 +697,19 @@ CREATE TABLE `finance_periods` (
 );
 --> statement-breakpoint
 CREATE TABLE `finance_quick_sessions` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`period_id` int NOT NULL,
-	`unit_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	`account_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`period_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
+	`user_id` bigint NOT NULL,
+	`account_id` bigint NOT NULL,
 	`default_date` varchar(40) NOT NULL,
 	`default_competency` varchar(191) NOT NULL,
 	`default_contribution_type` varchar(80) NOT NULL,
-	`default_payment_method_id` int,
+	`default_payment_method_id` bigint,
 	`status` varchar(80) NOT NULL DEFAULT 'EM_ANDAMENTO',
-	`entry_count` int NOT NULL DEFAULT 0,
-	`total_cents` int NOT NULL DEFAULT 0,
+	`entry_count` bigint NOT NULL DEFAULT 0,
+	`total_cents` bigint NOT NULL DEFAULT 0,
 	`started_at` varchar(40) NOT NULL,
 	`finished_at` varchar(40),
 	`updated_at` varchar(40) NOT NULL,
@@ -717,21 +717,21 @@ CREATE TABLE `finance_quick_sessions` (
 );
 --> statement-breakpoint
 CREATE TABLE `help_article_reads` (
-	`user_id` int NOT NULL,
-	`article_id` int NOT NULL,
+	`user_id` bigint NOT NULL,
+	`article_id` bigint NOT NULL,
 	`viewed_at` varchar(40) NOT NULL,
 	CONSTRAINT `help_article_reads_user_id_article_id_pk` PRIMARY KEY(`user_id`,`article_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `help_articles` (
-	`id` int NOT NULL,
-	`tenant_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint,
 	`slug` varchar(191) NOT NULL,
 	`title` varchar(255) NOT NULL,
 	`summary` text NOT NULL,
 	`content` text NOT NULL,
 	`category` varchar(191) NOT NULL,
-	`display_order` int NOT NULL DEFAULT 0,
+	`display_order` bigint NOT NULL DEFAULT 0,
 	`target_profiles` text NOT NULL DEFAULT ('["TODOS"]'),
 	`required_permission` varchar(191),
 	`related_route` varchar(191),
@@ -739,7 +739,7 @@ CREATE TABLE `help_articles` (
 	`is_new_feature` boolean NOT NULL DEFAULT false,
 	`released_at` varchar(40),
 	`version` varchar(191) NOT NULL DEFAULT '1.0',
-	`created_by_user_id` int,
+	`created_by_user_id` bigint,
 	`published_at` varchar(40),
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -747,7 +747,7 @@ CREATE TABLE `help_articles` (
 );
 --> statement-breakpoint
 CREATE TABLE `institution_lookup_attempts` (
-	`id` int AUTO_INCREMENT NOT NULL,
+	`id` bigint AUTO_INCREMENT NOT NULL,
 	`code_fingerprint` varchar(191) NOT NULL,
 	`success` boolean NOT NULL,
 	`ip_address` varchar(191),
@@ -756,9 +756,9 @@ CREATE TABLE `institution_lookup_attempts` (
 );
 --> statement-breakpoint
 CREATE TABLE `login_history` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`user_id` int,
-	`tenant_id` int,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`user_id` bigint,
+	`tenant_id` bigint,
 	`identifier_type` varchar(80) NOT NULL,
 	`identifier_fingerprint` varchar(191) NOT NULL,
 	`success` boolean NOT NULL,
@@ -771,29 +771,29 @@ CREATE TABLE `login_history` (
 );
 --> statement-breakpoint
 CREATE TABLE `matrices` (
-	`id` int NOT NULL,
-	`convention_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`convention_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	CONSTRAINT `matrices_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_custom_fields` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`normalized_name` varchar(255) NOT NULL,
 	`field_type` varchar(80) NOT NULL,
 	`help_text` text,
 	`required` boolean NOT NULL DEFAULT false,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
-	`display_order` int NOT NULL DEFAULT 0,
+	`display_order` bigint NOT NULL DEFAULT 0,
 	`section_name` varchar(255) NOT NULL DEFAULT 'Informações adicionais',
 	`show_admin` boolean NOT NULL DEFAULT true,
 	`show_public` boolean NOT NULL DEFAULT false,
 	`show_print` boolean NOT NULL DEFAULT false,
 	`options_json` text,
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_custom_fields_id` PRIMARY KEY(`id`),
@@ -802,45 +802,45 @@ CREATE TABLE `member_custom_fields` (
 );
 --> statement-breakpoint
 CREATE TABLE `member_custom_values` (
-	`person_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`field_id` int NOT NULL,
+	`person_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`field_id` bigint NOT NULL,
 	`value_text` varchar(191) NOT NULL,
-	`updated_by_user_id` int NOT NULL,
+	`updated_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_custom_values_person_id_field_id_pk` PRIMARY KEY(`person_id`,`field_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_photos` (
-	`person_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`person_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`image_data` LONGBLOB NOT NULL,
 	`mime_type` varchar(80) NOT NULL,
-	`byte_size` int NOT NULL,
+	`byte_size` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_photos_person_id` PRIMARY KEY(`person_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_pre_registration_custom_values` (
-	`pre_registration_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`field_id` int NOT NULL,
+	`pre_registration_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`field_id` bigint NOT NULL,
 	`value_text` varchar(191) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_pre_registration_custom_values_pre_registr_21b6d6870321ab` PRIMARY KEY(`pre_registration_id`,`field_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_pre_registration_forms` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`token_hash` varchar(191) NOT NULL,
 	`token_prefix` varchar(191) NOT NULL,
-	`unit_id` int,
+	`unit_id` bigint,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	`expires_at` varchar(40),
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_pre_registration_forms_id` PRIMARY KEY(`id`),
@@ -849,27 +849,27 @@ CREATE TABLE `member_pre_registration_forms` (
 );
 --> statement-breakpoint
 CREATE TABLE `member_pre_registration_photos` (
-	`pre_registration_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`pre_registration_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`image_data` LONGBLOB NOT NULL,
 	`mime_type` varchar(80) NOT NULL,
-	`byte_size` int NOT NULL,
+	`byte_size` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_pre_registration_photos_pre_registration_id` PRIMARY KEY(`pre_registration_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_pre_registration_rate_limits` (
 	`rate_key` varchar(191) NOT NULL,
-	`attempts` int NOT NULL DEFAULT 0,
+	`attempts` bigint NOT NULL DEFAULT 0,
 	`window_started_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_pre_registration_rate_limits_rate_key` PRIMARY KEY(`rate_key`)
 );
 --> statement-breakpoint
 CREATE TABLE `member_pre_registrations` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`form_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`form_id` bigint NOT NULL,
 	`full_name` varchar(255) NOT NULL,
 	`birth_date` varchar(40),
 	`cpf` varchar(32),
@@ -877,17 +877,17 @@ CREATE TABLE `member_pre_registrations` (
 	`whatsapp` varchar(40),
 	`email` varchar(254),
 	`voter_title` varchar(32),
-	`matrix_id` int,
-	`branch_id` int,
+	`matrix_id` bigint,
+	`branch_id` bigint,
 	`status` varchar(80) NOT NULL DEFAULT 'PENDENTE',
 	`payload_json` text NOT NULL,
 	`consent_at` varchar(40) NOT NULL,
 	`consent_version` varchar(191) NOT NULL,
 	`source_hash` varchar(191) NOT NULL,
 	`review_reason` varchar(191),
-	`reviewed_by_user_id` int,
+	`reviewed_by_user_id` bigint,
 	`reviewed_at` varchar(40),
-	`approved_member_id` int,
+	`approved_member_id` bigint,
 	`correction_token_hash` varchar(191),
 	`correction_expires_at` varchar(40),
 	`created_at` varchar(40) NOT NULL,
@@ -897,22 +897,22 @@ CREATE TABLE `member_pre_registrations` (
 );
 --> statement-breakpoint
 CREATE TABLE `member_sequences` (
-	`tenant_id` int NOT NULL,
-	`last_number` int NOT NULL DEFAULT 0,
+	`tenant_id` bigint NOT NULL,
+	`last_number` bigint NOT NULL DEFAULT 0,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `member_sequences_tenant_id` PRIMARY KEY(`tenant_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `membership_permissions` (
-	`membership_id` int NOT NULL,
+	`membership_id` bigint NOT NULL,
 	`permission` varchar(191) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `membership_permissions_membership_id_permission_pk` PRIMARY KEY(`membership_id`,`permission`)
 );
 --> statement-breakpoint
 CREATE TABLE `notification_recipients` (
-	`notification_id` int NOT NULL,
-	`user_id` int NOT NULL,
+	`notification_id` bigint NOT NULL,
+	`user_id` bigint NOT NULL,
 	`read_at` varchar(40),
 	`archived_at` varchar(40),
 	`created_at` varchar(40) NOT NULL,
@@ -920,8 +920,8 @@ CREATE TABLE `notification_recipients` (
 );
 --> statement-breakpoint
 CREATE TABLE `notifications` (
-	`id` int NOT NULL,
-	`tenant_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint,
 	`audience` varchar(191) NOT NULL DEFAULT 'ORGANIZATIONAL',
 	`type` varchar(80) NOT NULL,
 	`title` varchar(255) NOT NULL,
@@ -929,8 +929,8 @@ CREATE TABLE `notifications` (
 	`priority` varchar(191) NOT NULL DEFAULT 'INFO',
 	`internal_route` varchar(191),
 	`source_entity` varchar(191),
-	`source_entity_id` int,
-	`unit_id` int,
+	`source_entity_id` bigint,
+	`unit_id` bigint,
 	`group_key` varchar(191),
 	`metadata_json` text,
 	`mandatory` boolean NOT NULL DEFAULT false,
@@ -940,8 +940,8 @@ CREATE TABLE `notifications` (
 );
 --> statement-breakpoint
 CREATE TABLE `organizational_functions` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`normalized_name` varchar(255) NOT NULL,
 	`description` text,
@@ -954,8 +954,8 @@ CREATE TABLE `organizational_functions` (
 );
 --> statement-breakpoint
 CREATE TABLE `organizational_units` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`type` varchar(80) NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`fantasy_name` varchar(255),
@@ -976,10 +976,10 @@ CREATE TABLE `organizational_units` (
 	`foundation_date` varchar(40),
 	`notes` text,
 	`code` varchar(191) NOT NULL,
-	`parent_id` int,
+	`parent_id` bigint,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	`archived_at` varchar(40),
-	`archived_by` int,
+	`archived_by` bigint,
 	`archived_previous_status` varchar(80),
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -990,9 +990,9 @@ CREATE TABLE `organizational_units` (
 );
 --> statement-breakpoint
 CREATE TABLE `people` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`member_number` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`member_number` bigint NOT NULL,
 	`full_name` varchar(255) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'MEMBRO_ATIVO',
 	`birth_date` varchar(40),
@@ -1009,8 +1009,8 @@ CREATE TABLE `people` (
 	`father_name` varchar(255),
 	`marital_status` varchar(80),
 	`spouse_name` varchar(255),
-	`spouse_person_id` int,
-	`children_count` int NOT NULL DEFAULT 0,
+	`spouse_person_id` bigint,
+	`children_count` bigint NOT NULL DEFAULT 0,
 	`postal_code` varchar(20),
 	`street` varchar(191),
 	`address_number` varchar(191),
@@ -1022,17 +1022,17 @@ CREATE TABLE `people` (
 	`workplace` varchar(191),
 	`education_level` varchar(191),
 	`theological_education` text,
-	`primary_function_id` int,
-	`matrix_id` int NOT NULL,
-	`branch_id` int,
+	`primary_function_id` bigint,
+	`matrix_id` bigint NOT NULL,
+	`branch_id` bigint,
 	`church_entry_date` varchar(40),
 	`origin_church` varchar(191),
 	`conversion_date` varchar(40),
 	`baptism_date` varchar(40),
 	`consecration_date` varchar(40),
 	`notes` text,
-	`linked_auth_user_id` int,
-	`created_by_user_id` int NOT NULL,
+	`linked_auth_user_id` bigint,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `people_id` PRIMARY KEY(`id`),
@@ -1042,9 +1042,9 @@ CREATE TABLE `people` (
 );
 --> statement-breakpoint
 CREATE TABLE `person_functions` (
-	`person_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`function_id` int NOT NULL,
+	`person_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`function_id` bigint NOT NULL,
 	`is_primary` boolean NOT NULL DEFAULT false,
 	`started_at` varchar(40),
 	`ended_at` varchar(40),
@@ -1053,25 +1053,25 @@ CREATE TABLE `person_functions` (
 );
 --> statement-breakpoint
 CREATE TABLE `person_history` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
 	`event_type` varchar(80) NOT NULL,
 	`description` text NOT NULL,
 	`event_date` varchar(40),
 	`previous_values` text,
 	`new_values` text,
-	`actor_user_id` int NOT NULL,
-	`actor_membership_id` int,
+	`actor_user_id` bigint NOT NULL,
+	`actor_membership_id` bigint,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `person_history_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `person_relationships` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
-	`related_person_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
+	`related_person_id` bigint NOT NULL,
 	`relationship_type` varchar(80) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `person_relationships_id` PRIMARY KEY(`id`),
@@ -1079,14 +1079,14 @@ CREATE TABLE `person_relationships` (
 );
 --> statement-breakpoint
 CREATE TABLE `platform_audit` (
-	`id` int AUTO_INCREMENT NOT NULL,
-	`actor_user_id` int NOT NULL,
-	`tenant_id` int,
+	`id` bigint AUTO_INCREMENT NOT NULL,
+	`actor_user_id` bigint NOT NULL,
+	`tenant_id` bigint,
 	`action` varchar(191) NOT NULL,
 	`entity_type` varchar(80) NOT NULL,
-	`entity_id` int NOT NULL,
-	`convention_id` int,
-	`unit_id` int,
+	`entity_id` bigint NOT NULL,
+	`convention_id` bigint,
+	`unit_id` bigint,
 	`ip_address` varchar(191),
 	`user_agent` text,
 	`device_summary` varchar(191),
@@ -1096,8 +1096,8 @@ CREATE TABLE `platform_audit` (
 );
 --> statement-breakpoint
 CREATE TABLE `platform_owners` (
-	`singleton_id` int NOT NULL DEFAULT 1,
-	`user_id` int NOT NULL,
+	`singleton_id` bigint NOT NULL DEFAULT 1,
+	`user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `platform_owners_singleton_id` PRIMARY KEY(`singleton_id`),
@@ -1106,12 +1106,12 @@ CREATE TABLE `platform_owners` (
 );
 --> statement-breakpoint
 CREATE TABLE `saas_charges` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`subscription_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`subscription_id` bigint NOT NULL,
 	`competence` varchar(16) NOT NULL,
 	`description` text NOT NULL,
-	`amount_cents` int NOT NULL,
+	`amount_cents` bigint NOT NULL,
 	`issued_date` varchar(40) NOT NULL,
 	`due_date` varchar(40) NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'PENDENTE',
@@ -1128,18 +1128,18 @@ CREATE TABLE `saas_charges` (
 );
 --> statement-breakpoint
 CREATE TABLE `saas_payments` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`subscription_id` int NOT NULL,
-	`charge_id` int NOT NULL,
-	`amount_cents` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`subscription_id` bigint NOT NULL,
+	`charge_id` bigint NOT NULL,
+	`amount_cents` bigint NOT NULL,
 	`paid_date` varchar(40) NOT NULL,
 	`payment_method` varchar(191) NOT NULL,
 	`notes` text,
 	`payment_provider` varchar(191) NOT NULL DEFAULT 'MANUAL',
 	`provider_payment_id` varchar(191),
 	`external_reference` varchar(191),
-	`created_by` int NOT NULL,
+	`created_by` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `saas_payments_id` PRIMARY KEY(`id`),
 	CONSTRAINT `saas_payments_charge_id_unique` UNIQUE(`charge_id`),
@@ -1147,13 +1147,13 @@ CREATE TABLE `saas_payments` (
 );
 --> statement-breakpoint
 CREATE TABLE `saas_plans` (
-	`id` int NOT NULL,
+	`id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`description` text,
-	`price_cents` int NOT NULL,
+	`price_cents` bigint NOT NULL,
 	`billing_period` varchar(191) NOT NULL,
-	`default_grace_days` int NOT NULL DEFAULT 5,
-	`default_trial_days` int NOT NULL DEFAULT 15,
+	`default_grace_days` bigint NOT NULL DEFAULT 5,
+	`default_trial_days` bigint NOT NULL DEFAULT 15,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -1162,41 +1162,41 @@ CREATE TABLE `saas_plans` (
 );
 --> statement-breakpoint
 CREATE TABLE `secretary_document_template_versions` (
-	`template_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`version` int NOT NULL,
+	`template_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`version` bigint NOT NULL,
 	`title` varchar(255) NOT NULL,
 	`body` text NOT NULL,
 	`header_text` text,
 	`footer_text` text,
 	`signature_labels_json` text NOT NULL,
 	`style_json` text NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `secretary_document_template_versions_template_id_version_pk` PRIMARY KEY(`template_id`,`version`)
 );
 --> statement-breakpoint
 CREATE TABLE `secretary_document_templates` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`unit_id` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`unit_id` bigint,
 	`name` varchar(255) NOT NULL,
 	`document_type` varchar(80) NOT NULL,
 	`status` varchar(80) NOT NULL,
-	`current_version` int NOT NULL,
-	`created_by_user_id` int NOT NULL,
+	`current_version` bigint NOT NULL,
+	`created_by_user_id` bigint NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `secretary_document_templates_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `secretary_documents` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`unit_id` int NOT NULL,
-	`person_id` int NOT NULL,
-	`template_id` int NOT NULL,
-	`template_version` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
+	`template_id` bigint NOT NULL,
+	`template_version` bigint NOT NULL,
 	`document_type` varchar(80) NOT NULL,
 	`document_number` varchar(191) NOT NULL,
 	`title_snapshot` varchar(191) NOT NULL,
@@ -1204,19 +1204,19 @@ CREATE TABLE `secretary_documents` (
 	`header_snapshot` text,
 	`footer_snapshot` text,
 	`signatures_snapshot` text NOT NULL,
-	`issued_by_user_id` int NOT NULL,
+	`issued_by_user_id` bigint NOT NULL,
 	`issued_at` varchar(40) NOT NULL,
 	CONSTRAINT `secretary_documents_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `secretary_requests` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`person_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`person_id` bigint NOT NULL,
 	`request_type` varchar(80) NOT NULL,
 	`request_direction` varchar(191) NOT NULL DEFAULT 'SAIDA',
-	`origin_unit_id` int,
-	`destination_unit_id` int,
+	`origin_unit_id` bigint,
+	`destination_unit_id` bigint,
 	`external_church` varchar(191),
 	`external_city` varchar(191),
 	`external_state` varchar(191),
@@ -1225,9 +1225,9 @@ CREATE TABLE `secretary_requests` (
 	`status` varchar(80) NOT NULL,
 	`department_resolution` text,
 	`ebd_resolution` text,
-	`version` int NOT NULL,
-	`requested_by_user_id` int NOT NULL,
-	`reviewed_by_user_id` int,
+	`version` bigint NOT NULL,
+	`requested_by_user_id` bigint NOT NULL,
+	`reviewed_by_user_id` bigint,
 	`requested_at` varchar(40) NOT NULL,
 	`reviewed_at` varchar(40),
 	`completed_at` varchar(40),
@@ -1236,9 +1236,9 @@ CREATE TABLE `secretary_requests` (
 );
 --> statement-breakpoint
 CREATE TABLE `secretary_transfer_search_limits` (
-	`tenant_id` int NOT NULL,
-	`user_id` int NOT NULL,
-	`attempts` int NOT NULL DEFAULT 0,
+	`tenant_id` bigint NOT NULL,
+	`user_id` bigint NOT NULL,
+	`attempts` bigint NOT NULL DEFAULT 0,
 	`window_started_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `secretary_transfer_search_limits_tenant_id_user_id_pk` PRIMARY KEY(`tenant_id`,`user_id`)
@@ -1247,9 +1247,9 @@ CREATE TABLE `secretary_transfer_search_limits` (
 CREATE TABLE `sessions` (
 	`id` varchar(191) NOT NULL,
 	`token_hash` varchar(191) NOT NULL,
-	`user_id` int NOT NULL,
-	`active_matrix_id` int,
-	`active_branch_id` int,
+	`user_id` bigint NOT NULL,
+	`active_matrix_id` bigint,
+	`active_branch_id` bigint,
 	`previous_login_at` varchar(40),
 	`previous_identifier_type` varchar(80),
 	`previous_origin_summary` varchar(191),
@@ -1262,7 +1262,7 @@ CREATE TABLE `sessions` (
 --> statement-breakpoint
 CREATE TABLE `tenant_access_contexts` (
 	`token_hash` varchar(191) NOT NULL,
-	`tenant_id` int NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`expires_at` varchar(40) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	`last_used_at` varchar(40) NOT NULL,
@@ -1270,19 +1270,19 @@ CREATE TABLE `tenant_access_contexts` (
 );
 --> statement-breakpoint
 CREATE TABLE `tenant_memberships` (
-	`id` int NOT NULL,
-	`user_id` int NOT NULL,
-	`tenant_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`user_id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
 	`display_name` varchar(255) NOT NULL,
 	`role_name` varchar(255) NOT NULL,
-	`function_id` int,
+	`function_id` bigint,
 	`scope` varchar(80) NOT NULL,
-	`scope_unit_id` int NOT NULL,
+	`scope_unit_id` bigint NOT NULL,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
-	`invited_by_membership_id` int,
+	`invited_by_membership_id` bigint,
 	`accepted_at` varchar(40),
 	`archived_at` varchar(40),
-	`archived_by_membership_id` int,
+	`archived_by_membership_id` bigint,
 	`archived_previous_status` varchar(80),
 	`created_at` varchar(40) NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
@@ -1291,17 +1291,17 @@ CREATE TABLE `tenant_memberships` (
 );
 --> statement-breakpoint
 CREATE TABLE `tenant_subscriptions` (
-	`id` int NOT NULL,
-	`tenant_id` int NOT NULL,
-	`plan_id` int,
-	`contracted_price_cents` int NOT NULL DEFAULT 0,
-	`custom_price_cents` int,
+	`id` bigint NOT NULL,
+	`tenant_id` bigint NOT NULL,
+	`plan_id` bigint,
+	`contracted_price_cents` bigint NOT NULL DEFAULT 0,
+	`custom_price_cents` bigint,
 	`billing_period` varchar(191) NOT NULL,
 	`status` varchar(80) NOT NULL,
 	`start_date` varchar(40) NOT NULL,
 	`next_due_date` varchar(40),
-	`due_day` int,
-	`grace_days` int NOT NULL DEFAULT 5,
+	`due_day` bigint,
+	`grace_days` bigint NOT NULL DEFAULT 5,
 	`trial_start_date` varchar(40),
 	`trial_end_date` varchar(40),
 	`access_until` varchar(40),
@@ -1319,7 +1319,7 @@ CREATE TABLE `tenant_subscriptions` (
 );
 --> statement-breakpoint
 CREATE TABLE `tenants` (
-	`id` int NOT NULL,
+	`id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`slug` varchar(191) NOT NULL,
 	`access_code` varchar(191) NOT NULL,
@@ -1332,41 +1332,41 @@ CREATE TABLE `tenants` (
 );
 --> statement-breakpoint
 CREATE TABLE `unit_logos` (
-	`unit_id` int NOT NULL,
+	`unit_id` bigint NOT NULL,
 	`image_data` LONGBLOB NOT NULL,
 	`mime_type` varchar(80) NOT NULL,
-	`byte_size` int NOT NULL,
+	`byte_size` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `unit_logos_unit_id` PRIMARY KEY(`unit_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `user_permissions` (
-	`user_id` int NOT NULL,
+	`user_id` bigint NOT NULL,
 	`permission` varchar(191) NOT NULL,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `user_permissions_user_id_permission_pk` PRIMARY KEY(`user_id`,`permission`)
 );
 --> statement-breakpoint
 CREATE TABLE `user_profile_photos` (
-	`user_id` int NOT NULL,
+	`user_id` bigint NOT NULL,
 	`image_data` LONGBLOB NOT NULL,
 	`mime_type` varchar(80) NOT NULL,
-	`byte_size` int NOT NULL,
+	`byte_size` bigint NOT NULL,
 	`updated_at` varchar(40) NOT NULL,
 	CONSTRAINT `user_profile_photos_user_id` PRIMARY KEY(`user_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `user_unit_links` (
-	`user_id` int NOT NULL,
-	`unit_id` int NOT NULL,
+	`user_id` bigint NOT NULL,
+	`unit_id` bigint NOT NULL,
 	`is_primary` boolean NOT NULL DEFAULT true,
 	`created_at` varchar(40) NOT NULL,
 	CONSTRAINT `user_unit_links_user_id_unit_id_pk` PRIMARY KEY(`user_id`,`unit_id`)
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` int NOT NULL,
-	`convention_id` int NOT NULL,
+	`id` bigint NOT NULL,
+	`convention_id` bigint NOT NULL,
 	`name` varchar(255) NOT NULL,
 	`username` varchar(100) NOT NULL,
 	`email` varchar(254) NOT NULL,
@@ -1375,11 +1375,11 @@ CREATE TABLE `users` (
 	`password_hash` varchar(255) NOT NULL,
 	`role_name` varchar(255) NOT NULL,
 	`scope` varchar(80) NOT NULL,
-	`bound_matrix_id` int,
-	`bound_branch_id` int,
+	`bound_matrix_id` bigint,
+	`bound_branch_id` bigint,
 	`status` varchar(80) NOT NULL DEFAULT 'ATIVO',
 	`must_change_password` boolean NOT NULL DEFAULT false,
-	`failed_attempts` int NOT NULL DEFAULT 0,
+	`failed_attempts` bigint NOT NULL DEFAULT 0,
 	`blocked_until` varchar(40),
 	`last_login_at` varchar(40),
 	`last_identifier_type` varchar(80),
