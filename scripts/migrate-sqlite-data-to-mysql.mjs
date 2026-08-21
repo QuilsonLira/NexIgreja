@@ -78,15 +78,19 @@ async function targetColumns(connection, tableName) {
       ORDER BY ordinal_position`,
     [tableName],
   );
-  return rows.map((row) => ({
-    name: String(row.columnName),
-    dataType: String(row.dataType ?? "").toLowerCase(),
-    columnType: String(row.columnType ?? "").toLowerCase(),
-    maxLength: row.maxLength == null ? null : Number(row.maxLength),
-    nullable: String(row.isNullable) === "YES",
-    defaultValue: row.columnDefault,
-    generated: String(row.extra ?? "").toUpperCase().includes("GENERATED"),
-  }));
+  return rows.map((row) => {
+    const extra = String(row.extra ?? "").toLowerCase();
+    return {
+      name: String(row.columnName),
+      dataType: String(row.dataType ?? "").toLowerCase(),
+      columnType: String(row.columnType ?? "").toLowerCase(),
+      maxLength: row.maxLength == null ? null : Number(row.maxLength),
+      nullable: String(row.isNullable) === "YES",
+      defaultValue: row.columnDefault,
+      generated: extra.includes("generated"),
+      autoIncrement: extra.includes("auto_increment"),
+    };
+  });
 }
 
 async function targetTableSet(connection) {
@@ -160,10 +164,10 @@ async function buildPlan(sqlite, connection) {
     const missingRequired = dstColumns.filter(
       (column) =>
         !column.generated &&
+        !column.autoIncrement &&
         !srcNames.has(column.name) &&
         !column.nullable &&
-        column.defaultValue == null &&
-        !column.columnType.includes("auto_increment"),
+        column.defaultValue == null,
     );
     if (missingRequired.length) {
       throw new Error(
@@ -229,31 +233,64 @@ async function verifyCounts(sqlite, connection, plan) {
 
 async function verifyForeignKeys(connection) {
   const [keys] = await connection.query(`
-    SELECT table_name AS tableName,
+    SELECT constraint_name AS constraintName,
+           table_name AS tableName,
            column_name AS columnName,
            referenced_table_name AS refTable,
-           referenced_column_name AS refColumn
+           referenced_column_name AS refColumn,
+           ordinal_position AS ordinalPosition
       FROM information_schema.key_column_usage
      WHERE table_schema = DATABASE()
        AND referenced_table_name IS NOT NULL
      ORDER BY table_name, constraint_name, ordinal_position
   `);
-  const failures = [];
+
+  const grouped = new Map();
   for (const key of keys) {
-    const table = String(key.tableName);
-    const column = String(key.columnName);
-    const refTable = String(key.refTable);
-    const refColumn = String(key.refColumn);
+    const groupKey = `${key.tableName}:${key.constraintName}`;
+    const group = grouped.get(groupKey) ?? {
+      constraintName: String(key.constraintName),
+      tableName: String(key.tableName),
+      refTable: String(key.refTable),
+      columns: [],
+    };
+    group.columns.push({
+      columnName: String(key.columnName),
+      refColumn: String(key.refColumn),
+      ordinalPosition: Number(key.ordinalPosition),
+    });
+    grouped.set(groupKey, group);
+  }
+
+  const failures = [];
+  for (const group of grouped.values()) {
+    group.columns.sort((a, b) => a.ordinalPosition - b.ordinalPosition);
+    const join = group.columns
+      .map(
+        ({ columnName, refColumn }) =>
+          `child.${quoteIdentifier(columnName)} = parent.${quoteIdentifier(refColumn)}`,
+      )
+      .join(" AND ");
+    const nonNull = group.columns
+      .map(({ columnName }) => `child.${quoteIdentifier(columnName)} IS NOT NULL`)
+      .join(" AND ");
+    const firstParentColumn = group.columns[0]?.refColumn;
+    if (!firstParentColumn) continue;
+
     const [rows] = await connection.query(`
       SELECT COUNT(*) AS count
-        FROM ${quoteIdentifier(table)} child
-        LEFT JOIN ${quoteIdentifier(refTable)} parent
-          ON child.${quoteIdentifier(column)} = parent.${quoteIdentifier(refColumn)}
-       WHERE child.${quoteIdentifier(column)} IS NOT NULL
-         AND parent.${quoteIdentifier(refColumn)} IS NULL
+        FROM ${quoteIdentifier(group.tableName)} child
+        LEFT JOIN ${quoteIdentifier(group.refTable)} parent
+          ON ${join}
+       WHERE ${nonNull}
+         AND parent.${quoteIdentifier(firstParentColumn)} IS NULL
     `);
     const count = Number(rows[0]?.count ?? 0);
-    if (count > 0) failures.push(`${table}.${column} -> ${refTable}.${refColumn}: ${count} orphan(s)`);
+    if (count > 0) {
+      failures.push(
+        `${group.tableName}.${group.constraintName} -> ${group.refTable}: ${count} orphan(s)`,
+      );
+    }
   }
   if (failures.length) {
     throw new Error(`Foreign-key verification failed: ${failures.slice(0, 20).join("; ")}`);
@@ -284,23 +321,21 @@ async function main() {
 
     if (preflightOnly) return;
 
+    await connection.query("SET FOREIGN_KEY_CHECKS = 0");
     await connection.beginTransaction();
     try {
-      await connection.query("SET FOREIGN_KEY_CHECKS = 0");
       for (const item of plan) {
         const inserted = await insertTable(sqlite, connection, item);
         console.log(`COPIED ${item.tableName} rows=${inserted}`);
       }
-      await connection.query("SET FOREIGN_KEY_CHECKS = 1");
       await verifyCounts(sqlite, connection, plan);
       await verifyForeignKeys(connection);
       await connection.commit();
     } catch (error) {
-      try {
-        await connection.query("SET FOREIGN_KEY_CHECKS = 1");
-      } catch {}
       await connection.rollback();
       throw error;
+    } finally {
+      await connection.query("SET FOREIGN_KEY_CHECKS = 1");
     }
 
     console.log(`SQLITE_TO_MYSQL_MIGRATION_OK tables=${plan.length} rows=${totalRows}`);
