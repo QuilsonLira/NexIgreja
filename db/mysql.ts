@@ -6,6 +6,14 @@ const globalForMysql = globalThis as typeof globalThis & {
   __NEXIGREJA_MYSQL_POOL?: mysql.Pool;
 };
 
+type MysqlConfigurationError = Error & { code: string };
+
+function configurationError(code: string, message: string): MysqlConfigurationError {
+  const error = new Error(message) as MysqlConfigurationError;
+  error.code = code;
+  return error;
+}
+
 function positiveInteger(value: string | undefined, fallback: number): number {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
@@ -20,9 +28,17 @@ function connectionFromSeparateEnvironment(): mysql.PoolOptions | null {
   const anyProvided = Boolean(host || user || password !== undefined || database);
   if (!anyProvided) return null;
 
-  if (!host || !user || password === undefined || !database) {
-    throw new Error(
-      "DB_HOST, DB_USER, DB_PASSWORD e DB_NAME precisam estar todos configurados quando variáveis MySQL separadas forem usadas.",
+  const missing = [
+    !host ? "DB_HOST" : null,
+    !user ? "DB_USER" : null,
+    password === undefined ? "DB_PASSWORD" : null,
+    !database ? "DB_NAME" : null,
+  ].filter((value): value is string => Boolean(value));
+
+  if (missing.length > 0) {
+    throw configurationError(
+      "NEXIGREJA_MYSQL_ENV_INCOMPLETE",
+      `Variáveis MySQL ausentes: ${missing.join(", ")}.`,
     );
   }
 
@@ -38,23 +54,40 @@ function connectionFromSeparateEnvironment(): mysql.PoolOptions | null {
 function connectionFromDatabaseUrl(): mysql.PoolOptions {
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) {
-    throw new Error(
+    throw configurationError(
+      "NEXIGREJA_MYSQL_ENV_MISSING",
       "Configure DB_HOST/DB_USER/DB_PASSWORD/DB_NAME ou DATABASE_URL para o backend MySQL.",
     );
   }
 
   if (!databaseUrl.startsWith("mysql://") && !databaseUrl.startsWith("mysql2://")) {
-    throw new Error("DATABASE_URL must use the mysql:// protocol.");
+    throw configurationError(
+      "NEXIGREJA_MYSQL_URL_PROTOCOL",
+      "DATABASE_URL deve usar o protocolo mysql:// ou mysql2://.",
+    );
   }
 
   const normalizedUrl = databaseUrl.startsWith("mysql2://")
     ? "mysql://" + databaseUrl.slice(9)
     : databaseUrl;
-  const parsed = new URL(normalizedUrl);
+
+  let parsed: URL;
+  try {
+    parsed = new URL(normalizedUrl);
+  } catch {
+    throw configurationError(
+      "NEXIGREJA_MYSQL_URL_INVALID",
+      "DATABASE_URL está malformada.",
+    );
+  }
+
   const database = decodeURIComponent(parsed.pathname.replace(/^\//, ""));
 
   if (!parsed.hostname || !parsed.username || !database) {
-    throw new Error("DATABASE_URL must include host, user and database name.");
+    throw configurationError(
+      "NEXIGREJA_MYSQL_URL_INCOMPLETE",
+      "DATABASE_URL precisa conter host, usuário e nome do banco.",
+    );
   }
 
   return {
