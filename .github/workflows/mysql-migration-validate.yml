@@ -10,12 +10,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -39,6 +39,32 @@ jobs:
       - name: Validate TypeScript
         run: npx tsc --noEmit
 
+      - name: Generate reviewed MySQL DDL candidate
+        run: npx drizzle-kit generate --config=drizzle.mysql.config.ts
+
+      - name: Package migration source snapshot
+        if: always()
+        run: |
+          tar \
+            --exclude=.git \
+            --exclude=node_modules \
+            --exclude=.sites-runtime \
+            --exclude=mysql-migration-source.tgz \
+            -czf mysql-migration-source.tgz .
+
+      - name: Commit generated lockfile and schema to migration branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/mysql-migration'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json db/schema.mysql.ts
+          if git diff --cached --quiet; then
+            echo "Generated MySQL artifacts already synchronized."
+          else
+            git commit -m "Sincroniza artefatos gerados da migração MySQL"
+            git push origin HEAD:mysql-migration
+          fi
+
       - name: Upload migration artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -47,4 +73,6 @@ jobs:
           path: |
             package-lock.json
             db/schema.mysql.ts
+            drizzle-mysql/
+            mysql-migration-source.tgz
           if-no-files-found: warn
