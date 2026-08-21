@@ -40,24 +40,30 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Generate reviewed MySQL DDL candidate
-        run: npx drizzle-kit generate --config=drizzle.mysql.config.ts
+        run: |
+          rm -rf drizzle-mysql
+          npx drizzle-kit generate --config=drizzle.mysql.config.ts
+
+      - name: Audit generated MySQL DDL
+        run: npm run db:mysql:audit
 
       - name: Package migration source snapshot
         if: always()
         run: |
+          rm -f /tmp/mysql-migration-source.tgz mysql-migration-source.tgz
           tar \
             --exclude=.git \
             --exclude=node_modules \
             --exclude=.sites-runtime \
-            --exclude=mysql-migration-source.tgz \
-            -czf mysql-migration-source.tgz .
+            -czf /tmp/mysql-migration-source.tgz .
+          cp /tmp/mysql-migration-source.tgz ./mysql-migration-source.tgz
 
-      - name: Commit generated lockfile and schema to migration branch
+      - name: Commit generated migration artifacts
         if: github.event_name == 'push' && github.ref == 'refs/heads/mysql-migration'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json db/schema.mysql.ts
+          git add package-lock.json db/schema.mysql.ts drizzle-mysql
           if git diff --cached --quiet; then
             echo "Generated MySQL artifacts already synchronized."
           else
@@ -74,5 +80,6 @@ jobs:
             package-lock.json
             db/schema.mysql.ts
             drizzle-mysql/
+            database/mysql/003_partial_unique_constraints.sql
             mysql-migration-source.tgz
           if-no-files-found: warn
