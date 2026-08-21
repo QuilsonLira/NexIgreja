@@ -1,0 +1,33 @@
+name: MySQL bootstrap artifact
+
+on:
+  push:
+    branches:
+      - mysql-bootstrap-artifact
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show migration checksums
+        run: |
+          sha256sum drizzle-mysql/*.sql
+          sha256sum database/mysql/003_baseline_composite_indexes.sql
+          sha256sum database/mysql/003_partial_unique_constraints.sql
+          sha256sum database/mysql/004_runtime_tables_from_real_backup.sql
+
+      - name: Package exact production migrations
+        uses: actions/upload-artifact@v4
+        with:
+          name: mysql-bootstrap-production-files
+          path: |
+            drizzle-mysql/*.sql
+            database/mysql/003_baseline_composite_indexes.sql
+            database/mysql/003_partial_unique_constraints.sql
+            database/mysql/004_runtime_tables_from_real_backup.sql
