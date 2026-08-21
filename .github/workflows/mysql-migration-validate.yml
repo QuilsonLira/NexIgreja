@@ -18,6 +18,7 @@ jobs:
     timeout-minutes: 30
     env:
       DATABASE_URL: mysql://root:root@127.0.0.1:3306/nexigreja
+      MYSQL_RUNTIME_ENABLED: "true"
     services:
       mysql:
         image: mysql:8.0
