@@ -89,6 +89,9 @@ jobs:
       - name: Import SQLite data into MySQL
         run: npm run db:mysql:import -- /tmp/nexigreja-source.sqlite
 
+      - name: Verify full SQLite to MySQL content parity
+        run: npm run db:mysql:verify -- /tmp/nexigreja-source.sqlite
+
       - name: Verify BIGINT and BLOB preservation
         run: node scripts/verify-mysql-import-fixture.mjs
 
