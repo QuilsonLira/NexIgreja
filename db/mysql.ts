@@ -39,5 +39,5 @@ export function getMysqlPool() {
 }
 
 export function getMysqlDb() {
-  return drizzle(getMysqlPool(), { schema });
+  return drizzle(getMysqlPool(), { schema, mode: "default" });
 }
