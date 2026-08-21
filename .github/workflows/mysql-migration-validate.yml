@@ -79,6 +79,18 @@ jobs:
       - name: Validate native Next.js build on MySQL configuration
         run: npm run build
 
+      - name: Create SQLite migration fixture
+        run: node scripts/create-sqlite-migration-fixture.mjs /tmp/nexigreja-source.sqlite
+
+      - name: Preflight SQLite to MySQL data migration
+        run: npm run db:mysql:import:preflight -- /tmp/nexigreja-source.sqlite
+
+      - name: Import SQLite data into MySQL
+        run: npm run db:mysql:import -- /tmp/nexigreja-source.sqlite
+
+      - name: Verify BIGINT and BLOB preservation
+        run: node scripts/verify-mysql-import-fixture.mjs
+
       - name: Package migration source snapshot
         if: always()
         run: |
