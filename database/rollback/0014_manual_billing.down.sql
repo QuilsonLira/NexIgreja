@@ -1,0 +1,12 @@
+DROP INDEX IF EXISTS `commercial_audit_tenant_created_idx`;
+DROP TABLE IF EXISTS `commercial_audit`;
+DROP INDEX IF EXISTS `saas_payments_tenant_paid_idx`;
+DROP TABLE IF EXISTS `saas_payments`;
+DROP INDEX IF EXISTS `saas_charges_tenant_status_due_idx`;
+DROP TABLE IF EXISTS `saas_charges`;
+DROP INDEX IF EXISTS `tenant_subscriptions_status_due_idx`;
+DROP TABLE IF EXISTS `tenant_subscriptions`;
+DROP TABLE IF EXISTS `billing_settings`;
+DROP INDEX IF EXISTS `saas_plans_name_unique`;
+DROP TABLE IF EXISTS `saas_plans`;
+DROP TABLE IF EXISTS `commercial_profiles`;

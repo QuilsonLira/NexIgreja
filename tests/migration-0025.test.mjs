@@ -1,0 +1,33 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import test from "node:test";
+import { DatabaseSync } from "node:sqlite";
+
+function apply(db,name){for(const sql of readFileSync(new URL(`../drizzle/${name}.sql`,import.meta.url),"utf8").split("--> statement-breakpoint").map(value=>value.trim()).filter(Boolean))db.exec(sql);}
+function fixture(){const db=new DatabaseSync(":memory:");db.exec(`PRAGMA foreign_keys=ON;
+CREATE TABLE tenants(id INTEGER PRIMARY KEY);
+CREATE TABLE organizational_units(id INTEGER PRIMARY KEY,tenant_id INTEGER,type TEXT,name TEXT,parent_id INTEGER,status TEXT,archived_at TEXT,UNIQUE(id,tenant_id));
+CREATE TABLE organizational_functions(id INTEGER PRIMARY KEY,tenant_id INTEGER,name TEXT,status TEXT,UNIQUE(id,tenant_id));
+CREATE TABLE auth_users(id INTEGER PRIMARY KEY,status TEXT,archived_at TEXT);
+CREATE TABLE tenant_memberships(id INTEGER PRIMARY KEY,user_id INTEGER,tenant_id INTEGER,display_name TEXT,role_name TEXT,scope TEXT,scope_unit_id INTEGER,status TEXT,archived_at TEXT,UNIQUE(id,tenant_id));
+CREATE TABLE membership_permissions(membership_id INTEGER,permission TEXT,created_at TEXT,PRIMARY KEY(membership_id,permission));
+CREATE TABLE user_permissions(user_id INTEGER,permission TEXT,created_at TEXT,PRIMARY KEY(user_id,permission));
+CREATE TABLE platform_owners(singleton_id INTEGER PRIMARY KEY,user_id INTEGER);
+CREATE TABLE people(id INTEGER PRIMARY KEY,tenant_id INTEGER,member_number INTEGER,full_name TEXT,status TEXT,matrix_id INTEGER,branch_id INTEGER,birth_date TEXT,sex TEXT,cpf TEXT,phone TEXT,whatsapp TEXT,linked_auth_user_id INTEGER,UNIQUE(id,tenant_id));
+CREATE TABLE help_articles(id INTEGER PRIMARY KEY,tenant_id INTEGER,slug TEXT,title TEXT,summary TEXT,content TEXT,category TEXT,display_order INTEGER,target_profiles TEXT,required_permission TEXT,related_route TEXT,published INTEGER,is_new_feature INTEGER,released_at TEXT,version TEXT,created_by_user_id INTEGER,published_at TEXT,created_at TEXT,updated_at TEXT,UNIQUE(tenant_id,slug));
+CREATE TABLE help_article_reads(user_id INTEGER,article_id INTEGER,viewed_at TEXT,PRIMARY KEY(user_id,article_id));
+INSERT INTO tenants VALUES(1),(2),(1770000000000000);
+INSERT INTO organizational_units VALUES(10,1,'CONVENCAO','Convenção A',NULL,'ATIVO',NULL),(20,1,'MATRIZ','Matriz A',10,'ATIVO',NULL),(30,1,'FILIAL','Filial A',20,'ATIVO',NULL),(31,1,'FILIAL','Filial B',20,'ATIVO',NULL),(110,2,'CONVENCAO','Convenção B',NULL,'ATIVO',NULL),(120,2,'MATRIZ','Matriz B',110,'ATIVO',NULL);
+INSERT INTO organizational_functions VALUES(80,1,'Pastor','ATIVO'),(180,2,'Pastor','ATIVO');
+INSERT INTO auth_users VALUES(1,'ATIVO',NULL),(2,'ATIVO',NULL),(3,'ATIVO',NULL),(4,'ATIVO',NULL);
+INSERT INTO tenant_memberships VALUES(1,1,1,'Admin Convenção','Administrador da Convenção','CONVENCAO',10,'ATIVO',NULL),(2,2,2,'Admin B','Administrador da Convenção','CONVENCAO',110,'ATIVO',NULL),(3,3,1,'Admin Matriz','Administrador da Matriz','MATRIZ',20,'ATIVO',NULL),(4,4,1,'Financeiro Filial','Financeiro','FILIAL',30,'ATIVO',NULL);
+INSERT INTO people VALUES(1001,1,1,'Pessoa Matriz','MEMBRO_ATIVO',20,NULL,'1990-01-01','FEMININO','11111111111','1111','1111',1),(1002,1,2,'Pessoa Filial A','MEMBRO_ATIVO',20,30,NULL,NULL,NULL,NULL,NULL,NULL),(1003,1,3,'Pessoa Filial B','MEMBRO_ATIVO',20,31,NULL,NULL,NULL,NULL,NULL,NULL),(2001,2,1,'Pessoa Outro Tenant','MEMBRO_ATIVO',120,NULL,NULL,NULL,NULL,NULL,NULL,2);
+INSERT INTO platform_owners VALUES(1,1);`);apply(db,"0019_departments_ebd");apply(db,"0022_finance_core");apply(db,"0023_finance_periods_and_quick_entry");apply(db,"0025_finance_quick_entry_corrections");return db;}
+
+test("0025 adiciona campos contábeis, permissões e ajuda",()=>{const db=fixture(),columns=db.prepare("PRAGMA table_info(finance_movements)").all().map(row=>row.name);for(const column of ["reversal_direction","created_during_reopening","version","updated_at"])assert.ok(columns.includes(column),column);assert.equal(db.prepare("SELECT COUNT(*) total FROM help_articles WHERE version='36'").get().total,9);assert.equal(db.prepare("SELECT COUNT(*) total FROM membership_permissions WHERE membership_id=3 AND permission IN ('FINANCEIRO_LANCAMENTOS_EDITAR_ABERTO','FINANCEIRO_LANCAMENTOS_EXCLUIR_ABERTO','FINANCEIRO_CONTRIBUINTES_FILIAIS_PESQUISAR')").get().total,3);assert.equal(db.prepare("SELECT COUNT(*) total FROM membership_permissions WHERE membership_id=4 AND permission IN ('FINANCEIRO_LANCAMENTOS_EDITAR_ABERTO','FINANCEIRO_LANCAMENTOS_EXCLUIR_ABERTO','FINANCEIRO_CONTRIBUINTES_FILIAIS_PESQUISAR')").get().total,0);});
+
+test("entrada estornada produz saldo líquido zero com efeito inverso real",()=>{const db=fixture();db.exec(`INSERT INTO finance_accounts(id,tenant_id,unit_id,name,account_type,initial_balance_cents,initial_balance_date,status,created_by_user_id,created_at,updated_at) VALUES(500,1,20,'Conta','CAIXA_FISICO',0,'2026-07-01','ATIVA',3,'2026-07-01','2026-07-01');
+INSERT INTO finance_movements(id,tenant_id,unit_id,account_id,direction,amount_cents,occurred_on,competency,description,source,privacy,status,created_by_user_id,created_at,updated_at) VALUES(600,1,20,500,'ENTRADA',10000,'2026-07-10','2026-07','Entrada','MANUAL','IDENTIFICADA_PRIVADA','ESTORNADO',3,'2026-07-10','2026-07-11');
+INSERT INTO finance_movements(id,tenant_id,unit_id,account_id,direction,reversal_direction,amount_cents,occurred_on,competency,description,source,source_entity,source_entity_id,privacy,status,original_movement_id,created_by_user_id,created_at,updated_at) VALUES(601,1,20,500,'ESTORNO','SAIDA',10000,'2026-07-11','2026-07','Estorno','OUTRO','ESTORNO',600,'IDENTIFICADA_PRIVADA','CONFIRMADO',600,3,'2026-07-11','2026-07-11');`);const net=db.prepare("SELECT SUM(CASE WHEN status IN ('CONFIRMADO','ESTORNADO') AND direction='ENTRADA' THEN amount_cents WHEN status='CONFIRMADO' AND direction='ESTORNO' AND reversal_direction='SAIDA' THEN -amount_cents ELSE 0 END) net FROM finance_movements WHERE tenant_id=1").get().net;assert.equal(net,0);assert.equal(db.prepare("SELECT reversal_direction value FROM finance_movements WHERE id=601").get().value,"SAIDA");});
+
+test("busca ampliada permanece na Matriz e no tenant corretos",()=>{const db=fixture();const direct=db.prepare("SELECT id FROM people WHERE tenant_id=? AND matrix_id=? AND branch_id IS NULL ORDER BY id").all(1,20).map(row=>row.id),expanded=db.prepare("SELECT id FROM people WHERE tenant_id=? AND matrix_id=? ORDER BY id").all(1,20).map(row=>row.id);assert.deepEqual(direct,[1001]);assert.deepEqual(expanded,[1001,1002,1003]);assert.equal(expanded.includes(2001),false);assert.ok(db.prepare("SELECT name FROM sqlite_master WHERE type='index' AND name='people_finance_hierarchy_search_idx'").get());});

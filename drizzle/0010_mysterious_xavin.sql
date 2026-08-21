@@ -1,0 +1,1 @@
+ALTER TABLE `auth_sessions` ADD `organization_selection_required` integer DEFAULT false NOT NULL;

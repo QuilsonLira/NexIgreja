@@ -1,0 +1,13 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { addDays,canBypassLicense,daysBetween,evaluateLicense,isPaymentIdempotent,nextDueDate,paymentRenewal } from "../lib/billing/policy.ts";
+const base={today:"2026-09-10",nextDueDate:"2026-09-15",graceDays:5,trialEndDate:null,accessUntil:null,warningDays:7} as const;
+test("teste válido permite acesso e teste expirado suspende",()=>{assert.equal(evaluateLicense({...base,status:"TESTE",trialEndDate:"2026-09-22"}).canAccess,true);const expired=evaluateLicense({...base,status:"TESTE",trialEndDate:"2026-09-09"});assert.equal(expired.canAccess,false);assert.equal(expired.nextStatus,"SUSPENSA");});
+test("cliente ativo com vencimento futuro e no dia continua acessando",()=>{assert.equal(evaluateLicense({...base,status:"ATIVA"}).nextStatus,"ATIVA");const today=evaluateLicense({...base,status:"ATIVA",nextDueDate:"2026-09-10"});assert.equal(today.canAccess,true);assert.match(today.message,/vence hoje/);});
+test("vencimento entra em carência e fim da carência suspende",()=>{const grace=evaluateLicense({...base,status:"ATIVA",nextDueDate:"2026-09-08",graceDays:5});assert.equal(grace.nextStatus,"EM_CARENCIA");assert.equal(grace.canAccess,true);const ended=evaluateLicense({...base,status:"EM_CARENCIA",nextDueDate:"2026-09-01",graceDays:5});assert.equal(ended.nextStatus,"SUSPENSA");assert.equal(ended.canAccess,false);});
+test("suspensa bloqueia e cortesia nunca suspende por cobrança",()=>{assert.equal(evaluateLicense({...base,status:"SUSPENSA"}).canAccess,false);assert.equal(evaluateLicense({...base,status:"ISENTA",nextDueDate:null}).canAccess,true);assert.equal(evaluateLicense({...base,status:"ISENTA",nextDueDate:null,accessUntil:"2026-09-09"}).nextStatus,"ENCERRADA");});
+test("renovação respeita periodicidade, dia fixo e último dia do mês",()=>{assert.equal(nextDueDate("2026-09-10","MENSAL",10),"2026-10-10");assert.equal(nextDueDate("2026-09-10","TRIMESTRAL",10),"2026-12-10");assert.equal(nextDueDate("2026-01-31","MENSAL",31),"2026-02-28");});
+test("pagamento duplicado é idempotente",()=>{assert.equal(isPaymentIdempotent("PAGA",false),true);assert.equal(isPaymentIdempotent("PENDENTE",true),true);assert.equal(isPaymentIdempotent("PENDENTE",false),false);});
+test("pagamento após suspensão reativa uma única competência",()=>{assert.deepEqual(paymentRenewal("2026-09-18","MENSAL",10),{status:"ATIVA",nextDueDate:"2026-10-10"});});
+test("Platform Owner administra tenant suspenso sem liberar outros usuários",()=>{assert.equal(canBypassLicense(true),true);assert.equal(canBypassLicense(false),false);});
+test("aritmética de datas não varia com UTC",()=>{assert.equal(addDays("2026-09-10",5),"2026-09-15");assert.equal(daysBetween("2026-09-10","2026-09-15"),5);});

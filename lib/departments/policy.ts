@@ -1,0 +1,7 @@
+export type DepartmentScope={tenantId:number;conventionId:number;matrixId:number|null;branchId:number|null};
+export type ActorScope={tenantId:number;conventionId:number;scope:"CONVENCAO"|"MATRIZ"|"FILIAL";boundMatrixId:number|null;boundBranchId:number|null};
+export function departmentWithinOrganizationalScope(actor:ActorScope,target:DepartmentScope){if(actor.tenantId!==target.tenantId||actor.conventionId!==target.conventionId)return false;if(actor.scope==="CONVENCAO")return true;if(actor.scope==="MATRIZ")return target.matrixId===actor.boundMatrixId;return target.branchId===actor.boundBranchId;}
+export function canUseDepartment(globalPermissions:readonly string[],localPermissions:readonly string[],required:string,admin=false){return globalPermissions.includes(required)&&(admin||localPermissions.includes(required));}
+export function canManageClass(input:{admin:boolean;secretariat:boolean;assignedClassIds:readonly number[]},classId:number){return input.admin||input.secretariat||input.assignedClassIds.includes(classId);}
+export function attendanceTotals(statuses:readonly string[]){return statuses.reduce((result,status)=>{if(status==="PRESENTE")result.present++;else if(status==="AUSENTE")result.absent++;else if(status==="JUSTIFICADO")result.justified++;return result;},{present:0,absent:0,justified:0});}
+export function consecutiveAbsences(statusesNewestFirst:readonly string[]){let total=0;for(const status of statusesNewestFirst){if(status!=="AUSENTE")break;total++;}return total;}

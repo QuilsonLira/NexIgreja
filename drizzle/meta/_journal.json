@@ -1,0 +1,125 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1786031011807,
+      "tag": "0000_unusual_amphibian",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786037018312,
+      "tag": "0001_bizarre_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1786067867555,
+      "tag": "0002_aromatic_multiple_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1786312319008,
+      "tag": "0003_organizational_unit_details.up",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1786326467301,
+      "tag": "0004_media_assets.up",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1786333400866,
+      "tag": "0005_platform_administration.up",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1786337181776,
+      "tag": "0006_user_archiving.up",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1786338974824,
+      "tag": "0007_peaceful_ogun",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1786339371660,
+      "tag": "0008_parallel_ricochet",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1786373979457,
+      "tag": "0009_watery_maddog",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1786375278836,
+      "tag": "0010_mysterious_xavin",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1786377663922,
+      "tag": "0011_greedy_lady_mastermind",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1786381200000,
+      "tag": "0012_tenant_owned_credentials",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1786384800000,
+      "tag": "0013_institution_access_code",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1786460400000,
+      "tag": "0014_manual_billing",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "6",
+      "when": 1786413600000,
+      "tag": "0015_people_members",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "6",
+      "when": 1786417948196,
+      "tag": "0016_member_extensions",
+      "breakpoints": true
+    }
+  ]
+}

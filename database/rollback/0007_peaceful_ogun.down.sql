@@ -1,0 +1,18 @@
+DROP TRIGGER IF EXISTS `user_unit_links_same_tenant_insert`;
+DROP TRIGGER IF EXISTS `administration_audit_tenant_required_insert`;
+DROP TRIGGER IF EXISTS `auth_sessions_tenant_required_update`;
+DROP TRIGGER IF EXISTS `auth_sessions_tenant_required_insert`;
+DROP TRIGGER IF EXISTS `organizational_units_parent_tenant_update`;
+DROP TRIGGER IF EXISTS `organizational_units_parent_tenant_insert`;
+DROP TRIGGER IF EXISTS `organizational_units_tenant_required_update`;
+DROP TRIGGER IF EXISTS `organizational_units_tenant_required_insert`;
+DROP INDEX IF EXISTS `auth_sessions_tenant_idx`;
+DROP INDEX IF EXISTS `auth_users_tenant_idx`;
+DROP INDEX IF EXISTS `organizational_units_tenant_idx`;
+ALTER TABLE `platform_audit` DROP COLUMN `tenant_id`;
+ALTER TABLE `administration_audit` DROP COLUMN `tenant_id`;
+ALTER TABLE `login_history` DROP COLUMN `tenant_id`;
+ALTER TABLE `auth_sessions` DROP COLUMN `tenant_id`;
+ALTER TABLE `auth_users` DROP COLUMN `tenant_id`;
+ALTER TABLE `organizational_units` DROP COLUMN `tenant_id`;
+DROP TABLE `tenants`;

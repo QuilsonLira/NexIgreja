@@ -1,0 +1,5 @@
+import assert from "node:assert/strict";import {readFileSync} from "node:fs";import test from "node:test";
+const ui=readFileSync(new URL("../components/departments-manager.tsx",import.meta.url),"utf8"),css=readFileSync(new URL("../app/globals.css",import.meta.url),"utf8"),service=readFileSync(new URL("../lib/server/departments.ts",import.meta.url),"utf8");
+test("chamada mobile possui ações grandes, rascunho e revisão",()=>{assert.match(ui,/Marcar todos presentes/);assert.match(ui,/Salvar rascunho/);assert.match(ui,/Revisar e finalizar chamada/);assert.match(css,/@media\(max-width:760px\)/);assert.match(css,/min-height:45px/);});
+test("EBD registra visitantes, Bíblias, assistências, oferta e modo de leitura",()=>{for(const text of ["Adicionar visitante","Bíblias","Assistências","Oferta (R$)","Modo de leitura"])assert.match(ui,new RegExp(text.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")));});
+test("backend filtra tenant, escopo, classe atribuída e usa paginação",()=>{assert.match(service,/d\.tenant_id=\?/);assert.match(service,/CLASSE_NAO_ATRIBUIDA/);assert.match(service,/LIMIT \? OFFSET \?/);assert.match(service,/version=version\+1/);});

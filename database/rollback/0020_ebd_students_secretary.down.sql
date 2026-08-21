@@ -1,0 +1,15 @@
+DELETE FROM help_article_reads WHERE article_id BETWEEN 20001 AND 20010;
+DELETE FROM help_articles WHERE id BETWEEN 20001 AND 20010;
+DROP TABLE IF EXISTS secretary_audit;
+DROP TABLE IF EXISTS secretary_document_sequences;
+DROP TABLE IF EXISTS secretary_documents;
+DROP TABLE IF EXISTS secretary_document_template_versions;
+DROP TABLE IF EXISTS secretary_document_templates;
+DROP TABLE IF EXISTS consecrations;
+DROP TABLE IF EXISTS baptism_candidates;
+DROP TABLE IF EXISTS baptism_events;
+DROP TABLE IF EXISTS church_movements;
+DROP TABLE IF EXISTS secretary_requests;
+DROP TABLE IF EXISTS ebd_student_attendance;
+DROP TABLE IF EXISTS ebd_student_enrollments;
+DROP TABLE IF EXISTS ebd_students;

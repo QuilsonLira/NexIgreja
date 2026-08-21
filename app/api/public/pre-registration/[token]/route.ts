@@ -1,0 +1,5 @@
+import { ApiError,errorResponse } from "@/lib/server/auth";
+import { publicPreRegistrationForm,submitPreRegistration } from "@/lib/server/pre-registration";
+export const dynamic="force-dynamic";
+export async function GET(_request:Request,{params}:{params:Promise<{token:string}>}){try{return Response.json({ok:true,form:await publicPreRegistrationForm((await params).token)},{headers:{"Cache-Control":"no-store"}});}catch(error){return errorResponse(error);}}
+export async function POST(request:Request,{params}:{params:Promise<{token:string}>}){try{const data=await request.formData(),raw=String(data.get("payload")??"{}");if(raw.length>100_000)throw new ApiError(413,"DADOS_MUITO_GRANDES","Os dados enviados excedem o limite permitido.");const payload=JSON.parse(raw) as Record<string,unknown>,photo=data.get("photo");return Response.json({ok:true,...await submitPreRegistration(request,(await params).token,payload,photo instanceof File?photo:null)},{status:201,headers:{"Cache-Control":"no-store"}});}catch(error){return errorResponse(error);}}

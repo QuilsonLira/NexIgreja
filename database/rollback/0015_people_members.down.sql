@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS `member_photos`;
+DROP TABLE IF EXISTS `person_relationships`;
+DROP TABLE IF EXISTS `person_history`;
+DROP TABLE IF EXISTS `person_functions`;
+DROP TABLE IF EXISTS `people`;
+DROP TABLE IF EXISTS `member_sequences`;
+DROP INDEX IF EXISTS `organizational_functions_id_tenant_unique`;
+DROP INDEX IF EXISTS `organizational_units_hierarchy_scope_unique`;
+DROP INDEX IF EXISTS `organizational_units_id_tenant_unique`;

@@ -1,0 +1,41 @@
+import { generatedId, requirePermission } from "@/lib/server/admin";
+import { ApiError, database } from "@/lib/server/auth";
+import { CUSTOM_FIELD_TYPES, customValue, normalizedFieldName, parseFieldOptions } from "@/lib/members/custom-fields";
+import type { CustomFieldType, MemberCustomField, MemberCustomValue } from "@/lib/members/types";
+import type { AdministrativeSession, RequestMetadata } from "@/lib/types";
+
+type FieldRow={id:number;tenant_id:number;name:string;field_type:CustomFieldType;help_text:string|null;required:number;status:"ATIVO"|"INATIVO";display_order:number;section_name:string;show_admin:number;show_public:number;show_print:number;options_json:string|null;has_values?:number;created_at:string;updated_at:string};
+const now=()=>new Date().toISOString();
+const bool=(value:unknown,fallback=false)=>value===undefined?fallback:value===true||value===1||value==="1";
+const text=(value:unknown,max:number)=>typeof value==="string"?value.trim().replace(/[<>]/g,"").slice(0,max):"";
+function map(row:FieldRow):MemberCustomField{return{id:row.id,tenantId:row.tenant_id,name:row.name,fieldType:row.field_type,helpText:row.help_text,required:Boolean(row.required),status:row.status,displayOrder:row.display_order,sectionName:row.section_name,showAdmin:Boolean(row.show_admin),showPublic:Boolean(row.show_public),showPrint:Boolean(row.show_print),options:row.options_json?JSON.parse(row.options_json):[],hasValues:Boolean(row.has_values),createdAt:row.created_at,updatedAt:row.updated_at};}
+
+export async function customFieldsForTenant(tenantId:number,visibility:"all"|"admin"|"public"|"print",includeInactive=false):Promise<MemberCustomField[]>{
+  const visibilityFilter=visibility==="all"?"":`AND f.${visibility==="admin"?"show_admin":visibility==="public"?"show_public":"show_print"}=1`;
+  const result=await database().prepare(`SELECT f.*,(SELECT EXISTS(SELECT 1 FROM member_custom_values v WHERE v.field_id=f.id) OR EXISTS(SELECT 1 FROM member_pre_registration_custom_values pv WHERE pv.field_id=f.id)) has_values FROM member_custom_fields f WHERE f.tenant_id=? ${visibilityFilter} ${includeInactive?"":"AND f.status='ATIVO'"} ORDER BY f.display_order,f.id`).bind(tenantId).all<FieldRow>();
+  return result.results.map(map);
+}
+
+export async function validateCustomValues(tenantId:number,raw:unknown,visibility:"admin"|"public"):Promise<Array<{field:MemberCustomField;value:string|null}>>{
+  const fields=await customFieldsForTenant(tenantId,visibility,false);const source=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw as Record<string,unknown>:{};
+  try{return fields.map(field=>({field,value:customValue(field,source[String(field.id)])}));}catch(error){throw new ApiError(400,"CAMPO_PERSONALIZADO_INVALIDO",error instanceof Error?error.message:"Revise os campos adicionais.");}
+}
+
+export async function readMemberCustomValues(personId:number,tenantId:number,visibility:"admin"|"print"):Promise<MemberCustomValue[]>{
+  const column=visibility==="admin"?"show_admin":"show_print";
+  const result=await database().prepare(`SELECT f.id field_id,f.name,f.field_type,f.section_name,f.show_print,v.value_text FROM member_custom_values v JOIN member_custom_fields f ON f.id=v.field_id AND f.tenant_id=v.tenant_id WHERE v.person_id=? AND v.tenant_id=? AND f.${column}=1 ORDER BY f.display_order,f.id`).bind(personId,tenantId).all<{field_id:number;name:string;field_type:CustomFieldType;section_name:string;show_print:number;value_text:string}>();
+  return result.results.map(row=>({fieldId:row.field_id,name:row.name,fieldType:row.field_type,sectionName:row.section_name,value:row.value_text,showPrint:Boolean(row.show_print)}));
+}
+
+function audit(session:AdministrativeSession,metadata:RequestMetadata,action:string,id:number,details:unknown){return database().prepare("INSERT INTO administration_audit (actor_user_id,actor_membership_id,tenant_id,convention_id,action,entity_type,entity_id,unit_id,ip_address,user_agent,device_summary,details,created_at) VALUES (?,?,?,?,?,'CAMPO_MEMBRO',?,NULL,?,?,?,?,?)").bind(session.user.id,session.user.membershipId,session.user.tenantId,session.user.conventionId,action,id,metadata.ipAddress,metadata.userAgent,metadata.deviceSummary,JSON.stringify(details),now());}
+function input(value:Record<string,unknown>,existing?:MemberCustomField){
+  const name=text(value.name,100);if(name.length<2)throw new ApiError(400,"DADOS_INVALIDOS","Informe o nome do campo.");
+  const fieldType=(value.fieldType??existing?.fieldType) as CustomFieldType;if(!CUSTOM_FIELD_TYPES.includes(fieldType))throw new ApiError(400,"DADOS_INVALIDOS","Selecione um tipo de campo válido.");
+  if(existing?.hasValues&&fieldType!==existing.fieldType)throw new ApiError(409,"CAMPO_EM_USO","O tipo não pode ser alterado porque o campo já possui respostas. Desative-o e crie outro campo.");
+  const options=parseFieldOptions(value.options??existing?.options??[]);if(["LISTA_OPCOES","SELECAO_UNICA"].includes(fieldType)&&options.length<2)throw new ApiError(400,"DADOS_INVALIDOS","Cadastre pelo menos duas opções.");
+  return{name,normalizedName:normalizedFieldName(name),fieldType,helpText:text(value.helpText,300)||null,required:bool(value.required,existing?.required),status:(value.status??existing?.status)==="INATIVO"?"INATIVO":"ATIVO",displayOrder:Math.max(0,Math.min(9999,Number(value.displayOrder??existing?.displayOrder??0)||0)),sectionName:text(value.sectionName,80)||"Informações adicionais",showAdmin:bool(value.showAdmin,existing?.showAdmin??true),showPublic:bool(value.showPublic,existing?.showPublic),showPrint:bool(value.showPrint,existing?.showPrint),options};
+}
+
+export async function listCustomFields(request:Request){const {session}=await requirePermission(request,"CAMPOS_MEMBROS_CONFIGURAR");return customFieldsForTenant(session.user.tenantId,"all",true);}
+export async function createCustomField(request:Request,value:Record<string,unknown>){const {session,metadata}=await requirePermission(request,"CAMPOS_MEMBROS_CONFIGURAR");const v=input(value),id=generatedId(),created=now();try{await database().batch([database().prepare("INSERT INTO member_custom_fields (id,tenant_id,name,normalized_name,field_type,help_text,required,status,display_order,section_name,show_admin,show_public,show_print,options_json,created_by_user_id,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)").bind(id,session.user.tenantId,v.name,v.normalizedName,v.fieldType,v.helpText,v.required?1:0,v.status,v.displayOrder,v.sectionName,v.showAdmin?1:0,v.showPublic?1:0,v.showPrint?1:0,JSON.stringify(v.options),session.user.id,created,created),audit(session,metadata,"CAMPO_MEMBRO_CRIADO",id,{name:v.name,type:v.fieldType})]);}catch(error){if(error instanceof Error&&/UNIQUE/i.test(error.message))throw new ApiError(409,"CAMPO_DUPLICADO","Já existe um campo com este nome.");throw error;}return(await customFieldsForTenant(session.user.tenantId,"all",true)).find(field=>field.id===id)!;}
+export async function updateCustomField(request:Request,id:number,value:Record<string,unknown>){const {session,metadata}=await requirePermission(request,"CAMPOS_MEMBROS_CONFIGURAR");const existing=(await customFieldsForTenant(session.user.tenantId,"all",true)).find(field=>field.id===id);if(!existing)throw new ApiError(404,"CAMPO_NAO_ENCONTRADO","Campo não encontrado.");const v=input(value,existing),updated=now();try{await database().batch([database().prepare("UPDATE member_custom_fields SET name=?,normalized_name=?,field_type=?,help_text=?,required=?,status=?,display_order=?,section_name=?,show_admin=?,show_public=?,show_print=?,options_json=?,updated_at=? WHERE id=? AND tenant_id=?").bind(v.name,v.normalizedName,v.fieldType,v.helpText,v.required?1:0,v.status,v.displayOrder,v.sectionName,v.showAdmin?1:0,v.showPublic?1:0,v.showPrint?1:0,JSON.stringify(v.options),updated,id,session.user.tenantId),audit(session,metadata,v.status!==existing.status?"CAMPO_MEMBRO_STATUS_ALTERADO":"CAMPO_MEMBRO_EDITADO",id,{name:v.name,status:v.status})]);}catch(error){if(error instanceof Error&&/UNIQUE/i.test(error.message))throw new ApiError(409,"CAMPO_DUPLICADO","Já existe um campo com este nome.");throw error;}return(await customFieldsForTenant(session.user.tenantId,"all",true)).find(field=>field.id===id)!;}

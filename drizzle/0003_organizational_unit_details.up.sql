@@ -1,0 +1,17 @@
+ALTER TABLE `organizational_units` ADD `fantasy_name` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `legal_name` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `cnpj` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `phone` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `whatsapp` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `email` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `postal_code` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `street` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `number` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `complement` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `district` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `city` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `state` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `responsible_name` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `foundation_date` text;--> statement-breakpoint
+ALTER TABLE `organizational_units` ADD `notes` text;--> statement-breakpoint
+CREATE UNIQUE INDEX `organizational_units_cnpj_unique` ON `organizational_units` (`cnpj`);
