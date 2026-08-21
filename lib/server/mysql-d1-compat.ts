@@ -1,13 +1,10 @@
 import type {
+  Pool,
   PoolConnection,
   ResultSetHeader,
   RowDataPacket,
 } from "mysql2/promise";
 import { getMysqlPool } from "@/db/mysql";
-
-type Executor = {
-  execute(sql: string, values?: unknown[]): Promise<[unknown, unknown]>;
-};
 
 type ReturningPlan = {
   mutationSql: string;
@@ -177,8 +174,11 @@ class MySqlPreparedStatement implements D1PreparedStatement {
     return new MySqlPreparedStatement(this.sql, values.map(normalizeBinding));
   }
 
-  private async execute(executor: Executor): Promise<[unknown, unknown]> {
-    return executor.execute(translateSqlForMysql(this.sql), this.bindings);
+  private async execute(executor: Pool | PoolConnection): Promise<[unknown, unknown]> {
+    return executor.execute(
+      translateSqlForMysql(this.sql),
+      this.bindings as never,
+    ) as Promise<[unknown, unknown]>;
   }
 
   private async firstWithReturning<T>(): Promise<T | null> {
@@ -187,8 +187,14 @@ class MySqlPreparedStatement implements D1PreparedStatement {
     const connection = await getMysqlPool().getConnection();
     try {
       await connection.beginTransaction();
-      await connection.execute(translateSqlForMysql(plan.mutationSql), this.bindings);
-      const [rows] = await connection.execute<RowDataPacket[]>(plan.selectSql, plan.selectBindings.map(normalizeBinding));
+      await connection.execute(
+        translateSqlForMysql(plan.mutationSql),
+        this.bindings as never,
+      );
+      const [rows] = await connection.execute<RowDataPacket[]>(
+        plan.selectSql,
+        plan.selectBindings.map(normalizeBinding) as never,
+      );
       await connection.commit();
       return (rows[0] as T | undefined) ?? null;
     } catch (error) {
@@ -236,7 +242,7 @@ class MySqlPreparedStatement implements D1PreparedStatement {
     return (rows as RowDataPacket[]).map((row) => Object.values(row) as T);
   }
 
-  async executeOn(executor: Executor): Promise<D1Result<Record<string, unknown>>> {
+  async executeOn(executor: PoolConnection): Promise<D1Result<Record<string, unknown>>> {
     const [rows] = await this.execute(executor);
     if (Array.isArray(rows)) return asD1Result(rows as Record<string, unknown>[]);
     const header = resultHeader(rows);
