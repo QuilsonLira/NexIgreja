@@ -15,7 +15,22 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/nexigreja
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: nexigreja
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
 
     steps:
       - name: Checkout
@@ -50,7 +65,15 @@ jobs:
       - name: Audit generated MySQL DDL
         run: npm run db:mysql:audit
 
-      - name: Validate native Next.js build
+      - name: Apply migrations to real MySQL 8
+        run: npm run db:mysql:migrate
+
+      - name: Verify migration status and schema
+        run: |
+          npm run db:mysql:status
+          npm run db:mysql:ping
+
+      - name: Validate native Next.js build on MySQL configuration
         run: npm run build
 
       - name: Package migration source snapshot
