@@ -8,8 +8,8 @@
   "scripts": {
     "install:ci": "bash scripts/install-ci.sh",
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
-    "build": "next build --webpack",
-    "build:sites": "bash scripts/build-verified.sh",
+    "build": "bash scripts/build-verified.sh",
+    "build:sites": "vinext build",
     "start": "next start",
     "start:sites": "node dist/server.js",
     "pretest": "node --test tests/migration-0034.test.mjs tests/migration-0035.test.mjs",
