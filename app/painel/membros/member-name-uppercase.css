@@ -1,0 +1,3 @@
+.member-form fieldset:first-of-type .form-grid > .field-group.form-span-2:first-child input {
+  text-transform: uppercase;
+}
