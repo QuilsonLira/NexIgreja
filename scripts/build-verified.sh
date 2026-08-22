@@ -10,6 +10,7 @@ echo "Building NexIgreja with native Next.js output (.next)..."
 echo "Applying MySQL runtime compatibility and diagnostics..."
 node "${project_root}/scripts/apply-mysql-runtime-patch.mjs"
 node "${project_root}/scripts/apply-finance-mysql-compat.mjs"
+node "${project_root}/scripts/apply-rateio-person-patch.mjs"
 
 next_bin="${project_root}/node_modules/.bin/next"
 if [[ ! -x "${next_bin}" ]]; then
