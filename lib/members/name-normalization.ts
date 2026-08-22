@@ -7,6 +7,9 @@ import type { MemberWriteInput } from "@/lib/members/types";
 export function normalizeMemberWriteInput(input: MemberWriteInput): MemberWriteInput {
   return {
     ...input,
-    fullName: input.fullName.toLocaleUpperCase("pt-BR"),
+    fullName:
+      typeof input.fullName === "string"
+        ? input.fullName.toLocaleUpperCase("pt-BR")
+        : input.fullName,
   };
 }
