@@ -88,13 +88,11 @@ export async function GET(request: Request) {
       args.push(quickSession.unit_id);
     }
 
+    const numericQuery = query.replace(/\D/g, "");
     where.push(
-      "(p.full_name LIKE ? COLLATE NOCASE OR printf('%06d',p.member_number) LIKE ?)",
+      "(LOWER(p.full_name) LIKE LOWER(?) OR CAST(p.member_number AS CHAR) LIKE ?)",
     );
-    args.push(
-      `${query}%`,
-      `%${query.replace(/\D/g, "") || query}%`,
-    );
+    args.push(`%${query}%`, `%${numericQuery || query}%`);
 
     const people = await database()
       .prepare(
@@ -108,7 +106,7 @@ export async function GET(request: Request) {
         LEFT JOIN person_financial_preferences pref ON pref.person_id=p.id AND pref.tenant_id=p.tenant_id
         WHERE ${where.join(" AND ")}
           AND (p.branch_id IS NULL OR (b.status='ATIVO' AND b.archived_at IS NULL))
-        ORDER BY p.full_name COLLATE NOCASE
+        ORDER BY LOWER(p.full_name)
         LIMIT 30`,
       )
       .bind(...args)
