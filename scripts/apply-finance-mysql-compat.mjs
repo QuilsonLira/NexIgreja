@@ -5,6 +5,7 @@ const financePath = path.join(process.cwd(), "lib", "server", "finance.ts");
 const periodsPath = path.join(process.cwd(), "lib", "server", "finance-periods.ts");
 const reportsPath = path.join(process.cwd(), "lib", "server", "finance-reports.ts");
 const quickComponentPath = path.join(process.cwd(), "components", "finance-quick-entry.tsx");
+const stageTwoPath = path.join(process.cwd(), "lib", "server", "finance-stage-two.ts");
 
 async function read(file) {
   return readFile(file, "utf8");
@@ -125,4 +126,18 @@ function replaceRequired(source, current, replacement, label) {
     : replaceRequired(after, oldDeps, newDeps, "finance quick contributor effect dependency");
 
   await saveIfChanged(quickComponentPath, before, after, "Finance quick contributor search");
+}
+
+// Stage-two forms send decimal strings normalized by the browser using a dot.
+// The legacy parser treats dots as thousands separators, so values such as
+// "1.00" were being read as R$ 100,00. Settlement modifiers must also accept
+// zero because interest, penalty, discount and adjustments are optional.
+{
+  const before = await read(stageTwoPath);
+  const oldParsers = `const money=(value:unknown,label="Valor")=>{try{return parseMoneyToCents(value);}catch{throw new ApiError(400,"VALOR_INVALIDO",\`\${label} inválido.\`);}};\nconst nonNegativeMoney=(value:unknown,label:string)=>{if(value===null||value===undefined||value==="")return 0;const result=money(value,label);if(result<0)throw new ApiError(400,"VALOR_INVALIDO",\`\${label} não pode ser negativo.\`);return result;};`;
+  const newParsers = `function stageTwoMoneyToCents(value:unknown,allowZero=false){\n  if(allowZero&&value===0)return 0;\n  if(typeof value==="string"){\n    const raw=value.trim().replace(/\\s/g,"").replace(/^R\\$/i,"");\n    if(allowZero&&/^0(?:[.,]0{1,2})?$/.test(raw))return 0;\n    if(/^\\d+\\.\\d{1,2}$/.test(raw)){const parsed=Math.round(Number(raw)*100);if(Number.isSafeInteger(parsed)&&parsed>0)return parsed;throw new Error("VALOR_INVALIDO");}\n  }\n  return parseMoneyToCents(value);\n}\nconst money=(value:unknown,label="Valor")=>{try{return stageTwoMoneyToCents(value);}catch{throw new ApiError(400,"VALOR_INVALIDO",\`\${label} inválido.\`);}};\nconst nonNegativeMoney=(value:unknown,label:string)=>{if(value===null||value===undefined||value==="")return 0;try{return stageTwoMoneyToCents(value,true);}catch{throw new ApiError(400,"VALOR_INVALIDO",\`\${label} inválido.\`);}};`;
+  const after = before.includes("function stageTwoMoneyToCents(")
+    ? before
+    : replaceRequired(before, oldParsers, newParsers, "finance stage-two settlement money parsing");
+  await saveIfChanged(stageTwoPath, before, after, "Finance installment settlement money parsing");
 }
